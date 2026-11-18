@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Barcode Scanner</title>
+<style>body{font-family:sans-serif;text-align:center;margin:10px}video{width:100%;max-width:500px}#r{font-size:26px;font-weight:bold;margin:10px;word-break:break-all}
+input{font-size:18px;padding:8px;margin:4px;width:90%;max-width:400px;box-sizing:border-box}button{font-size:20px;padding:10px 30px;margin:6px}#st{margin-top:8px}</style>
+</head><body>
+<video id="v" playsinline muted></video>
+<div id="r">Point camera at a barcode</div>
+<input id="name" placeholder="Product name"><br>
+<input id="shelf" type="number" inputmode="numeric" placeholder="Shelf quantity"><br>
+<input id="stock" type="number" inputmode="numeric" placeholder="Stock quantity"><br>
+<input id="comment" placeholder="Comment (optional)"><br>
+<button onclick="save()">Save</button>
+<div id="st"></div>
+<script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
+<script>
+const SHEET_URL='https://script.google.com/macros/s/AKfycbzBJ1M9Cu3l9e_PhcxyTLBwOdkX5-cwsnXQ-Z8P-ZX9c_gDtYJ0LoM-pIS6VtvDzL0/exec';
+let code="",scanT=0;const $=id=>document.getElementById(id);
+function save(){if(!code){alert('Scan a barcode first');return;}
+const it={code,name:$('name').value,shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value};
+$('st').textContent='Saving...';const t0=performance.now(),s0=scanT;
+fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(it)})
+.then(()=>{const t1=performance.now(),req=Math.round(t1-t0),tot=Math.round(t1-s0);$('st').textContent='Saved '+it.code+' in '+req+' ms (scan to saved: '+(tot/1000).toFixed(1)+' s)';console.log('Sheet save',{requestMs:req,scanToSavedMs:tot});})
+.catch(()=>$('st').textContent='Save failed - check internet and try again');
+code="";$('r').textContent='Scan next item';['name','shelf','stock','comment'].forEach(f=>$(f).value='');}
+new ZXing.BrowserMultiFormatReader().decodeFromConstraints({video:{facingMode:"environment"}},'v',res=>{if(res&&res.getText()!==code){code=res.getText();scanT=performance.now();$('r').textContent=code;$('name').focus();}});
+</script>
+</body></html>
