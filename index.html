@@ -1,28 +1,102 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Barcode Scanner</title>
-<style>body{font-family:sans-serif;text-align:center;margin:10px}video{width:100%;max-width:500px}#r{font-size:26px;font-weight:bold;margin:10px;word-break:break-all}
-input{font-size:18px;padding:8px;margin:4px;width:90%;max-width:400px;box-sizing:border-box}button{font-size:20px;padding:10px 30px;margin:6px}#st{margin-top:8px}</style>
-</head><body>
-<video id="v" playsinline muted></video>
-<div id="r">Point camera at a barcode</div>
-<input id="name" placeholder="Product name"><br>
-<input id="shelf" type="number" inputmode="numeric" placeholder="Shelf quantity"><br>
-<input id="stock" type="number" inputmode="numeric" placeholder="Stock quantity"><br>
-<input id="comment" placeholder="Comment (optional)"><br>
-<button onclick="save()">Save</button>
-<div id="st"></div>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6d28d9"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>Inventory Scanner</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#fff}
+body{background:linear-gradient(135deg,#6d28d9 0%,#db2777 50%,#f59e0b 100%);background-attachment:fixed;min-height:100dvh}
+.page{display:none;min-height:100dvh;padding:calc(20px + env(safe-area-inset-top)) 18px calc(20px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;flex-direction:column}
+.page.on{display:flex}
+.card{background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.3);border-radius:24px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+h1{font-size:30px;margin:8px 0 6px;letter-spacing:-.5px}
+.logo{font-size:64px;text-align:center;margin-top:6vh}
+p{line-height:1.5;opacity:.95;margin:8px 0}
+.steps{margin:14px 0 0;padding:0;list-style:none}
+.steps li{display:flex;gap:12px;align-items:flex-start;margin:12px 0;font-size:16px}
+.steps b{flex:0 0 30px;height:30px;border-radius:50%;background:#fff;color:#6d28d9;display:flex;align-items:center;justify-content:center}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:17px;font-size:19px;font-weight:700;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.go{background:#fff;color:#6d28d9;margin-top:auto;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.save{background:linear-gradient(90deg,#10b981,#059669);color:#fff;margin-top:14px}
+.reset{background:rgba(255,255,255,.2);color:#fff;border:2px solid rgba(255,255,255,.6);margin-top:10px}
+.cam{position:relative;border-radius:22px;overflow:hidden;background:#000;aspect-ratio:4/3;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+video{width:100%;height:100%;object-fit:cover;display:block}
+.frame{position:absolute;inset:22% 12%;border:3px solid rgba(255,255,255,.85);border-radius:14px}
+.laser{position:absolute;left:12%;right:12%;top:50%;height:3px;background:#f43f5e;box-shadow:0 0 12px #f43f5e;animation:scan 1.6s ease-in-out infinite}
+@keyframes scan{0%,100%{top:26%}50%{top:72%}}
+.locked .laser{display:none}.locked .frame{border-color:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.4)}
+#code{margin:14px 0 4px;text-align:center;font-size:15px;opacity:.9}
+#upc{text-align:center;font-size:30px;font-weight:800;letter-spacing:2px;word-break:break-all;min-height:38px}
+.pill{display:inline-block;background:#10b981;padding:4px 12px;border-radius:99px;font-size:13px;font-weight:700}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px;opacity:.9}
+input{width:100%;font-size:18px;padding:14px;border-radius:14px;border:0;background:rgba(255,255,255,.95);color:#111;outline:none}
+input:focus{box-shadow:0 0 0 3px #fde047}
+.row{display:flex;gap:10px}.row>div{flex:1}
+#st{margin-top:12px;text-align:center;font-size:15px;min-height:20px;font-weight:600}
+</style></head><body>
+
+<section id="p1" class="page on">
+  <div class="logo">📦</div>
+  <h1>Inventory Count</h1>
+  <p>Scan each product's barcode and record it straight to the inventory sheet.</p>
+  <div class="card">
+    <ul class="steps">
+      <li><b>1</b><span>Tap <strong>Next</strong> to start counting the inventory.</span></li>
+      <li><b>2</b><span>When your phone asks, tap <strong>Allow</strong> so the camera can scan barcodes.</span></li>
+      <li><b>3</b><span>Point the camera at the barcode. You'll hear a beep when it's read.</span></li>
+      <li><b>4</b><span>Type the product name and counts, then tap <strong>Submit</strong>.</span></li>
+    </ul>
+  </div>
+  <p style="text-align:center;margin-top:18px">👉 Click <strong>Next</strong> to count the inventory</p>
+  <button class="btn go" onclick="start()">Next →</button>
+</section>
+
+<section id="p2" class="page">
+  <div class="cam" id="cam"><video id="v" playsinline muted autoplay></video><div class="frame"></div><div class="laser"></div></div>
+  <div id="code">Point the camera at a barcode</div>
+  <div id="upc"></div>
+  <div class="card" style="margin-top:10px">
+    <label for="name">Product name</label>
+    <input id="name" placeholder="e.g. Coke 20 oz" autocomplete="off">
+    <div class="row">
+      <div><label for="shelf">Shelf qty</label><input id="shelf" type="number" inputmode="numeric" placeholder="0"></div>
+      <div><label for="stock">Stock qty</label><input id="stock" type="number" inputmode="numeric" placeholder="0"></div>
+    </div>
+    <label for="comment">Comment (optional)</label>
+    <input id="comment" placeholder="Optional">
+    <button class="btn save" onclick="save()">Submit ✓</button>
+    <button class="btn reset" onclick="resetScan()">↺ Reset scan</button>
+    <div id="st"></div>
+  </div>
+</section>
+
 <script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
 <script>
 const SHEET_URL='https://script.google.com/macros/s/AKfycbzBJ1M9Cu3l9e_PhcxyTLBwOdkX5-cwsnXQ-Z8P-ZX9c_gDtYJ0LoM-pIS6VtvDzL0/exec';
-let code="",scanT=0;const $=id=>document.getElementById(id);
-function save(){if(!code){alert('Scan a barcode first');return;}
-const it={code,name:$('name').value,shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value};
-$('st').textContent='Saving...';const t0=performance.now(),s0=scanT;
-fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(it)})
-.then(()=>{const t1=performance.now(),req=Math.round(t1-t0),tot=Math.round(t1-s0);$('st').textContent='Saved '+it.code+' in '+req+' ms (scan to saved: '+(tot/1000).toFixed(1)+' s)';console.log('Sheet save',{requestMs:req,scanToSavedMs:tot});})
-.catch(()=>$('st').textContent='Save failed - check internet and try again');
-code="";$('r').textContent='Scan next item';['name','shelf','stock','comment'].forEach(f=>$(f).value='');}
-new ZXing.BrowserMultiFormatReader().decodeFromConstraints({video:{facingMode:"environment"}},'v',res=>{if(res&&res.getText()!==code){code=res.getText();scanT=performance.now();$('r').textContent=code;$('name').focus();}});
+const $=id=>document.getElementById(id);
+let reader,code="",scanT=0,actx;
+function beep(){try{const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.value=1800;g.gain.setValueAtTime(.25,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.15);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+.15);}catch(e){} if(navigator.vibrate)navigator.vibrate(80);}
+function start(){actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume();
+  $('p1').classList.remove('on');$('p2').classList.add('on');scan();}
+function scan(){reader=reader||new ZXing.BrowserMultiFormatReader();code="";$('cam').classList.remove('locked');
+  $('code').textContent='Point the camera at a barcode';$('upc').textContent='';
+  reader.decodeFromConstraints({video:{facingMode:"environment"}},'v',res=>{
+    if(res&&!code){code=res.getText();scanT=performance.now();beep();reader.reset();
+      $('cam').classList.add('locked');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span>';$('upc').textContent=code;$('name').focus();}
+  }).catch(()=>{$('code').textContent='Camera blocked. Allow camera access in your browser settings and reload.';});}
+function clearFields(){['name','shelf','stock','comment'].forEach(f=>$(f).value='');}
+function resetScan(){if(reader)reader.reset();clearFields();$('st').textContent='';scan();}
+function save(){if(!code){$('st').textContent='⚠️ Scan a barcode first';return;}
+  if(!$('name').value.trim()){$('st').textContent='⚠️ Type the product name';$('name').focus();return;}
+  const it={code,name:$('name').value.trim(),shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value};
+  $('st').textContent='Saving...';const t0=performance.now(),s0=scanT;
+  fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(it)})
+  .then(()=>{const t1=performance.now(),req=Math.round(t1-t0),tot=Math.round(t1-s0);
+    $('st').textContent='✅ Saved '+it.code+' in '+req+' ms (scan to saved: '+(tot/1000).toFixed(1)+' s)';console.log('Sheet save',{requestMs:req,scanToSavedMs:tot});})
+  .catch(()=>{$('st').textContent='❌ Save failed. Check internet and try again.';});
+  clearFields();scan();}
+$('name').addEventListener('keydown',e=>{if(e.key==='Enter')save();});
 </script>
 </body></html>
