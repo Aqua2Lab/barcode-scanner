@@ -1,0 +1,25 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "Simple camera barcode scanner. Scan, enter product name, shelf qty, stock qty and comment, then Save. Each save adds a timestamped row (newest on top) to a Google Sheet through an Apps Script web app (`Code.gs`).",
+  "private": true,
+  "scripts": {
+    "test": "node test/decode.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aqua2lab/barcode-scanner.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aqua2lab/barcode-scanner/issues"
+  },
+  "homepage": "https://github.com/aqua2lab/barcode-scanner#readme",
+  "devDependencies": {
+    "@zxing/library": "^0.21.3",
+    "bwip-js": "^4.11.4",
+    "pngjs": "^7.0.0"
+  }
+}

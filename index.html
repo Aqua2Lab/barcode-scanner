@@ -29,6 +29,8 @@ video{width:100%;height:100%;object-fit:cover;display:block}
 .locked .laser{display:none}.locked .frame{border-color:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.4)}
 #code{margin:14px 0 4px;text-align:center;font-size:15px;opacity:.9}
 #upc{text-align:center;font-size:30px;font-weight:800;letter-spacing:2px;word-break:break-all;min-height:38px}
+#upc .sub{display:block;margin-top:2px;font-size:18px;font-weight:700;letter-spacing:1px;opacity:.95}
+#manualBox{display:none;margin-top:8px}
 .pill{display:inline-block;background:#10b981;padding:4px 12px;border-radius:99px;font-size:13px;font-weight:700}
 label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px;opacity:.9}
 input{width:100%;font-size:18px;padding:14px;border-radius:14px;border:0;background:rgba(255,255,255,.95);color:#111;outline:none}
@@ -51,7 +53,7 @@ input:focus{box-shadow:0 0 0 3px #fde047}
     <ul class="steps">
       <li><b>1</b><span>Tap <strong>Next</strong> to start counting the inventory.</span></li>
       <li><b>2</b><span>When your phone asks, tap <strong>Allow</strong> so the camera can scan barcodes.</span></li>
-      <li><b>3</b><span><strong>Step 1:</strong> point the camera at the barcode. You'll hear a beep and the UPC locks.</span></li>
+      <li><b>3</b><span><strong>Step 1:</strong> point the camera at the barcode. You'll hear a beep and the UPC locks. If a pack won't scan, tap <strong>Type UPC instead</strong>.</span></li>
       <li><b>4</b><span><strong>Step 2:</strong> point the camera at the product name so it fills in. Check it, add the counts, then tap <strong>Submit</strong>.</span></li>
     </ul>
   </div>
@@ -63,6 +65,12 @@ input:focus{box-shadow:0 0 0 3px #fde047}
   <div class="cam" id="cam"><video id="v" playsinline muted autoplay></video><div class="frame"></div><div class="laser"></div></div>
   <div id="code">Point the camera at a barcode</div>
   <div id="upc"></div>
+  <button class="btn reset" id="manualBtn" type="button" onclick="toggleManual()">Type UPC instead</button>
+  <div id="manualBox">
+    <label for="manualUpc">Digits printed under the barcode</label>
+    <input id="manualUpc" inputmode="numeric" autocomplete="off" enterkeyhint="done" placeholder="02896223 or 028200009623">
+    <button class="btn save" type="button" onclick="useManual()">Use this UPC</button>
+  </div>
   <div class="card" style="margin-top:10px">
     <label for="name">Product name</label>
     <input id="name" placeholder="e.g. Coke 20 oz" autocomplete="off">
@@ -82,19 +90,98 @@ input:focus{box-shadow:0 0 0 3px #fde047}
 
 <script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="scanner.js"></script>
 <script>
 const SHEET_URL='https://script.google.com/macros/s/AKfycbzBJ1M9Cu3l9e_PhcxyTLBwOdkX5-cwsnXQ-Z8P-ZX9c_gDtYJ0LoM-pIS6VtvDzL0/exec';
 const $=id=>document.getElementById(id);
-let reader,code="",scanT=0,actx;
+let reader,code="",scanT=0,actx,scanStream=null,scanGen=0,scanTimer=0,scanMiss=0,detectorPromise=null;
+const grabCanvas=document.createElement('canvas'),grabCtx=grabCanvas.getContext('2d',{willReadFrequently:true});
 function beep(){try{const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.value=1800;g.gain.setValueAtTime(.25,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.15);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+.15);}catch(e){} if(navigator.vibrate)navigator.vibrate(80);}
 function start(){actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume();
   $('p1').classList.remove('on');$('p2').classList.add('on');scan();loadOcr().catch(()=>{});}
-function scan(){reader=reader||new ZXing.BrowserMultiFormatReader();code="";$('cam').classList.remove('locked');
+function stopScanCamera(){scanGen++;if(scanTimer){clearTimeout(scanTimer);scanTimer=0;}
+  if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
+  const v=$('v');if(v.srcObject)v.srcObject=null;}
+async function openScanCamera(){
+  const attempts=[
+    {video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:'continuous'}]},audio:false},
+    {video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false},
+    {video:{facingMode:'environment'},audio:false}
+  ];
+  let stream,err;
+  for(const c of attempts){try{stream=await navigator.mediaDevices.getUserMedia(c);break;}catch(e){err=e;}}
+  if(!stream)throw err||new Error('camera');
+  const track=stream.getVideoTracks()[0];
+  try{const caps=track.getCapabilities?track.getCapabilities():{};
+    if(caps.focusMode&&caps.focusMode.indexOf('continuous')>=0)await track.applyConstraints({advanced:[{focusMode:'continuous'}]});
+  }catch(e){}
+  return stream;}
+function ensureDetector(){if(!('BarcodeDetector' in window))return Promise.resolve(null);
+  if(!detectorPromise)detectorPromise=(async()=>{try{
+    const want=['upc_e','upc_a','ean_13','ean_8','code_128'];let formats=want;
+    if(BarcodeDetector.getSupportedFormats){const ok=await BarcodeDetector.getSupportedFormats();formats=want.filter(f=>ok.indexOf(f)>=0);}
+    if(!formats.length)return null;return new BarcodeDetector({formats});
+  }catch(e){return null;}})();
+  return detectorPromise;}
+// Map the on-screen guide (a little padded, so quiet zones stay in frame) back onto the camera pixels.
+function guideImage(v){const W=v.videoWidth,H=v.videoHeight;if(!W||!H)return null;
+  const vr=v.getBoundingClientRect(),fr=document.querySelector('#cam .frame').getBoundingClientRect();
+  const k=Math.max(vr.width/W,vr.height/H),ox=(vr.width-W*k)/2,oy=(vr.height-H*k)/2;
+  const padX=fr.width*.12,padY=fr.height*.22;
+  let sx=(fr.left-vr.left-padX-ox)/k,sy=(fr.top-vr.top-padY-oy)/k,sw=(fr.width+padX*2)/k,sh=(fr.height+padY*2)/k;
+  sx=Math.max(0,sx);sy=Math.max(0,sy);sw=Math.min(W-sx,sw);sh=Math.min(H-sy,sh);
+  if(sw<24||sh<24)return null;
+  const dw=Math.round(sw),dh=Math.round(sh);
+  grabCanvas.width=dw;grabCanvas.height=dh;grabCtx.imageSmoothingEnabled=false;
+  grabCtx.drawImage(v,sx,sy,sw,sh,0,0,dw,dh);
+  const img=grabCtx.getImageData(0,0,dw,dh);return {data:img.data,width:dw,height:dh};}
+function fullImage(v){const W=v.videoWidth,H=v.videoHeight;if(!W||!H)return null;
+  const scale=Math.min(1,1280/Math.max(W,H)),dw=Math.round(W*scale),dh=Math.round(H*scale);
+  grabCanvas.width=dw;grabCanvas.height=dh;grabCtx.imageSmoothingEnabled=scale===1?false:true;
+  grabCtx.drawImage(v,0,0,dw,dh);const img=grabCtx.getImageData(0,0,dw,dh);return {data:img.data,width:dw,height:dh};}
+function showUpc(info){const upc=$('upc');upc.textContent='';
+  const main=document.createElement('div');main.textContent=info.upca||info.code;upc.appendChild(main);
+  if(info.upce&&info.upca){const sub=document.createElement('div');sub.className='sub';sub.textContent='UPC-E '+info.upce;upc.appendChild(sub);}}
+function lockCode(info){if(!info||!info.code||code)return;
+  code=info.code;scanT=performance.now();beep();stopScanCamera();
+  $('cam').classList.add('locked');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span>';showUpc(info);
+  $('st').textContent=info.unverified?'Check digit not verified. Saving exactly what you typed.':'';
+  setTimeout(()=>{if(code&&!ocrOn)toggleOcr();},900);}
+async function readFrame(v,gen){if(gen!==scanGen||code)return;
+  try{const det=await ensureDetector();
+    if(gen!==scanGen||code)return;
+    if(det){const found=await det.detect(v);
+      if(found&&found.length){const info=ScannerKit.normalizeBarcode(found[0].rawValue,found[0].format);if(info&&info.code){lockCode(info);return;}}}
+  }catch(e){}
+  if(typeof ZXing==='undefined'||!window.ScannerKit)return;
+  scanMiss++;
+  const sideways=scanMiss%2===0, thorough=scanMiss%4===0;
+  let hit=null;
+  try{const g=guideImage(v);if(g)hit=ScannerKit.decodeScanImage(ZXing,g.data,g.width,g.height,{rotate:sideways,thorough:thorough});
+    if(!hit&&!thorough&&scanMiss%5===0){const f=fullImage(v);if(f)hit=ScannerKit.decodeScanImage(ZXing,f.data,f.width,f.height,{rotate:true,thorough:false});}
+  }catch(e){console.warn('scan',e);}
+  if(gen!==scanGen||code)return;
+  if(hit)lockCode(hit);}
+function pump(gen){if(gen!==scanGen||code)return;const v=$('v');
+  if(v.videoWidth){readFrame(v,gen).then(()=>{if(gen===scanGen&&!code)scanTimer=setTimeout(()=>pump(gen),160);});return;}
+  scanTimer=setTimeout(()=>pump(gen),120);}
+function scan(){stopScanCamera();if(reader){try{reader.reset();}catch(e){}}
+  code='';scanMiss=0;$('cam').classList.remove('locked');
   $('code').innerHTML='<b>Step 1 of 2:</b> Point the camera at the barcode';$('upc').textContent='';
-  reader.decodeFromConstraints({video:{facingMode:"environment"}},'v',res=>{
-    if(res&&!code){code=res.getText();scanT=performance.now();beep();reader.reset();
-      $('cam').classList.add('locked');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span>';$('upc').textContent=code;setTimeout(()=>{if(code&&!ocrOn)toggleOcr();},900);}
-  }).catch(()=>{$('code').textContent='Camera blocked. Allow camera access in your browser settings and reload.';});}
+  const gen=scanGen;
+  openScanCamera().then(stream=>{if(gen!==scanGen){stream.getTracks().forEach(t=>t.stop());return;}
+    scanStream=stream;const v=$('v');v.playsInline=true;v.srcObject=stream;return v.play();
+  }).then(()=>{if(gen===scanGen)pump(gen);}).catch(()=>{if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
+    $('code').textContent='Camera blocked. Allow camera access in your browser settings and reload.';});}
+function toggleManual(){const box=$('manualBox'),open=box.style.display!=='block';
+  box.style.display=open?'block':'none';$('manualBtn').textContent=open?'Hide typed UPC':'Type UPC instead';
+  if(open)$('manualUpc').focus();}
+function useManual(){const info=ScannerKit.interpretManual($('manualUpc').value);
+  if(!info){$('st').textContent='Type the digits under the barcode';$('manualUpc').focus();return;}
+  $('manualBox').style.display='none';$('manualBtn').textContent='Type UPC instead';$('manualUpc').value='';
+  if(ocrOn){code=info.code;showUpc(info);$('st').textContent=info.unverified?'Check digit not verified. Saving exactly what you typed.':'';return;}
+  if(code)code='';
+  lockCode(info);}
 let ocrOn=false,ocrStream=null,worker=null,workerP=null,ocrRun=0,ocrScale=0,ocrHist=[],ocrBest=null,ocrUserEdit=false,ocrFrame=0,ocrBusy=false;
 const OCR_WL="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 &'-.%/";
 // Load the text reader once (started early, on Next, so step 2 is ready sooner)
@@ -105,7 +192,7 @@ function loadOcr(){if(worker)return Promise.resolve(worker);if(workerP)return wo
     new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),60000))]).catch(e=>{workerP=null;throw e;});
   return workerP;}
 async function toggleOcr(){if(ocrOn){stopOcr();return;}
-  if(reader)reader.reset();ocrOn=true;const run=++ocrRun;ocrHist=[];ocrBest=null;ocrUserEdit=false;ocrFrame=0;
+  stopScanCamera();if(reader){try{reader.reset();}catch(e){}}ocrOn=true;const run=++ocrRun;ocrHist=[];ocrBest=null;ocrUserEdit=false;ocrFrame=0;
   $('ocrBtn').textContent='✓ Done';$('ocrBox').style.display='block';$('cam').classList.remove('locked');$('cam').classList.add('ocring');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span> <b>Step 2:</b> point at the product name';
   const v=$('v');
   try{ocrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080},advanced:[{focusMode:'continuous'}]}})
@@ -208,7 +295,7 @@ async function ocrCapture(){if(!ocrOn||!worker)return;const v=$('v'),run=ocrRun;
 function stopOcr(){ocrOn=false;ocrRun++;if(ocrStream){ocrStream.getTracks().forEach(t=>t.stop());ocrStream=null;}
   $('ocrBtn').textContent='📷 Read name from label';$('ocrBox').style.display='none';$('cam').classList.remove('ocring');if(code){$('cam').classList.add('locked');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span> Confirm the name and tap Submit';}$('name').focus();}
 function clearFields(){['name','shelf','stock','comment'].forEach(f=>$(f).value='');}
-function resetScan(){if(ocrOn)stopOcr();if(reader)reader.reset();clearFields();$('st').textContent='';scan();}
+function resetScan(){if(ocrOn)stopOcr();if(reader){try{reader.reset();}catch(e){}}clearFields();$('st').textContent='';$('manualUpc').value='';scan();}
 function save(){if(!code){$('st').textContent='⚠️ Scan a barcode first';return;}
   if(!$('name').value.trim()){$('st').textContent='⚠️ Type the product name';$('name').focus();return;}
   const it={code,name:$('name').value.trim(),shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value};
@@ -219,6 +306,7 @@ function save(){if(!code){$('st').textContent='⚠️ Scan a barcode first';retu
   .catch(()=>{$('st').textContent='❌ Save failed. Check internet and try again.';});
   if(ocrOn)stopOcr();clearFields();scan();}
 $('name').addEventListener('keydown',e=>{if(e.key==='Enter')save();});
+$('manualUpc').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();useManual();}});
 $('name').addEventListener('input',()=>{if(ocrOn)ocrUserEdit=true;});
 </script>
 </body></html>
