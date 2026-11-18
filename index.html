@@ -33,6 +33,9 @@ video{width:100%;height:100%;object-fit:cover;display:block}
 label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px;opacity:.9}
 input{width:100%;font-size:18px;padding:14px;border-radius:14px;border:0;background:rgba(255,255,255,.95);color:#111;outline:none}
 input:focus{box-shadow:0 0 0 3px #fde047}
+.ocr{background:linear-gradient(90deg,#3b82f6,#8b5cf6);color:#fff;margin-top:8px;padding:13px;font-size:16px}
+.ocrbox{display:none;margin-top:8px;background:rgba(0,0,0,.25);border-radius:12px;padding:10px;font-size:14px}
+.ocring .laser{background:#3b82f6;box-shadow:0 0 12px #3b82f6}
 .row{display:flex;gap:10px}.row>div{flex:1}
 #st{margin-top:12px;text-align:center;font-size:15px;min-height:20px;font-weight:600}
 </style></head><body>
@@ -46,7 +49,7 @@ input:focus{box-shadow:0 0 0 3px #fde047}
       <li><b>1</b><span>Tap <strong>Next</strong> to start counting the inventory.</span></li>
       <li><b>2</b><span>When your phone asks, tap <strong>Allow</strong> so the camera can scan barcodes.</span></li>
       <li><b>3</b><span>Point the camera at the barcode. You'll hear a beep when it's read.</span></li>
-      <li><b>4</b><span>Type the product name and counts, then tap <strong>Submit</strong>.</span></li>
+      <li><b>4</b><span>Type the product name (or tap <strong>Read name from label</strong> to fill it from the camera) and counts, then tap <strong>Submit</strong>.</span></li>
     </ul>
   </div>
   <p style="text-align:center;margin-top:18px">👉 Click <strong>Next</strong> to count the inventory</p>
@@ -60,6 +63,8 @@ input:focus{box-shadow:0 0 0 3px #fde047}
   <div class="card" style="margin-top:10px">
     <label for="name">Product name</label>
     <input id="name" placeholder="e.g. Coke 20 oz" autocomplete="off">
+    <button class="btn ocr" id="ocrBtn" onclick="toggleOcr()">📷 Read name from label</button>
+    <div class="ocrbox" id="ocrBox">Point the camera at the product name. The text updates live. Tap <b>Done</b> when it looks right, then edit if needed.<div id="ocrSt" style="margin-top:6px;opacity:.85"></div></div>
     <div class="row">
       <div><label for="shelf">Shelf qty</label><input id="shelf" type="number" inputmode="numeric" placeholder="0"></div>
       <div><label for="stock">Stock qty</label><input id="stock" type="number" inputmode="numeric" placeholder="0"></div>
@@ -73,6 +78,7 @@ input:focus{box-shadow:0 0 0 3px #fde047}
 </section>
 
 <script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 const SHEET_URL='https://script.google.com/macros/s/AKfycbzBJ1M9Cu3l9e_PhcxyTLBwOdkX5-cwsnXQ-Z8P-ZX9c_gDtYJ0LoM-pIS6VtvDzL0/exec';
 const $=id=>document.getElementById(id);
@@ -86,8 +92,24 @@ function scan(){reader=reader||new ZXing.BrowserMultiFormatReader();code="";$('c
     if(res&&!code){code=res.getText();scanT=performance.now();beep();reader.reset();
       $('cam').classList.add('locked');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span>';$('upc').textContent=code;$('name').focus();}
   }).catch(()=>{$('code').textContent='Camera blocked. Allow camera access in your browser settings and reload.';});}
+let ocrOn=false,ocrStream=null,worker=null;
+async function toggleOcr(){if(ocrOn){stopOcr();return;}
+  if(reader)reader.reset();ocrOn=true;$('ocrBtn').textContent='✓ Done';$('ocrBox').style.display='block';$('cam').classList.remove('locked');$('cam').classList.add('ocring');
+  try{ocrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});const v=$('v');v.srcObject=ocrStream;await v.play();}
+  catch(e){$('ocrSt').textContent='Camera blocked. Allow camera access and try again.';stopOcr();return;}
+  if(!worker){$('ocrSt').textContent='Loading text reader (first time only)...';worker=await Tesseract.createWorker('eng');}
+  ocrLoop();}
+async function ocrLoop(){const v=$('v'),c=document.createElement('canvas');
+  while(ocrOn){if(v.videoWidth){const w=v.videoWidth,h=v.videoHeight,cw=w*.76,ch=h*.56;c.width=cw;c.height=ch;
+      const x=c.getContext('2d');x.filter='grayscale(1) contrast(1.6)';x.drawImage(v,(w-cw)/2,(h-ch)/2,cw,ch,0,0,cw,ch);
+      $('ocrSt').textContent='Reading...';
+      try{const r=await worker.recognize(c);const t=r.data.text.split('\n').map(l=>l.replace(/[^A-Za-z0-9 &'.%\/-]/g,'').trim()).filter(l=>l.length>1).join(' ').replace(/\s+/g,' ').trim();
+        if(ocrOn&&t){$('name').value=t.slice(0,80);$('ocrSt').textContent='Got: "'+t.slice(0,80)+'"';}else if(ocrOn)$('ocrSt').textContent='No text yet. Hold steady and move closer.';}catch(e){}}
+    await new Promise(r=>setTimeout(r,400));}}
+function stopOcr(){ocrOn=false;if(ocrStream){ocrStream.getTracks().forEach(t=>t.stop());ocrStream=null;}
+  $('ocrBtn').textContent='📷 Read name from label';$('ocrBox').style.display='none';$('cam').classList.remove('ocring');if(code)$('cam').classList.add('locked');$('name').focus();}
 function clearFields(){['name','shelf','stock','comment'].forEach(f=>$(f).value='');}
-function resetScan(){if(reader)reader.reset();clearFields();$('st').textContent='';scan();}
+function resetScan(){if(ocrOn)stopOcr();if(reader)reader.reset();clearFields();$('st').textContent='';scan();}
 function save(){if(!code){$('st').textContent='⚠️ Scan a barcode first';return;}
   if(!$('name').value.trim()){$('st').textContent='⚠️ Type the product name';$('name').focus();return;}
   const it={code,name:$('name').value.trim(),shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value};
@@ -96,7 +118,7 @@ function save(){if(!code){$('st').textContent='⚠️ Scan a barcode first';retu
   .then(()=>{const t1=performance.now(),req=Math.round(t1-t0),tot=Math.round(t1-s0);
     $('st').textContent='✅ Saved '+it.code+' in '+req+' ms (scan to saved: '+(tot/1000).toFixed(1)+' s)';console.log('Sheet save',{requestMs:req,scanToSavedMs:tot});})
   .catch(()=>{$('st').textContent='❌ Save failed. Check internet and try again.';});
-  clearFields();scan();}
+  if(ocrOn)stopOcr();clearFields();scan();}
 $('name').addEventListener('keydown',e=>{if(e.key==='Enter')save();});
 </script>
 </body></html>
