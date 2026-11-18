@@ -48,8 +48,8 @@ input:focus{box-shadow:0 0 0 3px #fde047}
     <ul class="steps">
       <li><b>1</b><span>Tap <strong>Next</strong> to start counting the inventory.</span></li>
       <li><b>2</b><span>When your phone asks, tap <strong>Allow</strong> so the camera can scan barcodes.</span></li>
-      <li><b>3</b><span>Point the camera at the barcode. You'll hear a beep when it's read.</span></li>
-      <li><b>4</b><span>Type the product name (or tap <strong>Read name from label</strong> to fill it from the camera) and counts, then tap <strong>Submit</strong>.</span></li>
+      <li><b>3</b><span><strong>Step 1:</strong> point the camera at the barcode. You'll hear a beep and the UPC locks.</span></li>
+      <li><b>4</b><span><strong>Step 2:</strong> point the camera at the product name so it fills in. Check it, add the counts, then tap <strong>Submit</strong>.</span></li>
     </ul>
   </div>
   <p style="text-align:center;margin-top:18px">👉 Click <strong>Next</strong> to count the inventory</p>
@@ -64,7 +64,7 @@ input:focus{box-shadow:0 0 0 3px #fde047}
     <label for="name">Product name</label>
     <input id="name" placeholder="e.g. Coke 20 oz" autocomplete="off">
     <button class="btn ocr" id="ocrBtn" onclick="toggleOcr()">📷 Read name from label</button>
-    <div class="ocrbox" id="ocrBox">Point the camera at the product name. The text updates live. Tap <b>Done</b> when it looks right, then edit if needed.<div id="ocrSt" style="margin-top:6px;opacity:.85"></div></div>
+    <div class="ocrbox" id="ocrBox"><div style="font-size:17px;font-weight:800;margin-bottom:4px">📖 Step 2 of 2: Point the camera at the product name on the package</div>The name fills in live. Tap <b>Done</b> when it looks right, then edit if needed.<div id="ocrSt" style="margin-top:6px;opacity:.85"></div></div>
     <div class="row">
       <div><label for="shelf">Shelf qty</label><input id="shelf" type="number" inputmode="numeric" placeholder="0"></div>
       <div><label for="stock">Stock qty</label><input id="stock" type="number" inputmode="numeric" placeholder="0"></div>
@@ -87,14 +87,14 @@ function beep(){try{const o=actx.createOscillator(),g=actx.createGain();o.type='
 function start(){actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume();
   $('p1').classList.remove('on');$('p2').classList.add('on');scan();}
 function scan(){reader=reader||new ZXing.BrowserMultiFormatReader();code="";$('cam').classList.remove('locked');
-  $('code').textContent='Point the camera at a barcode';$('upc').textContent='';
+  $('code').innerHTML='<b>Step 1 of 2:</b> Point the camera at the barcode';$('upc').textContent='';
   reader.decodeFromConstraints({video:{facingMode:"environment"}},'v',res=>{
     if(res&&!code){code=res.getText();scanT=performance.now();beep();reader.reset();
-      $('cam').classList.add('locked');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span>';$('upc').textContent=code;$('name').focus();}
+      $('cam').classList.add('locked');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span>';$('upc').textContent=code;setTimeout(()=>{if(code&&!ocrOn)toggleOcr();},900);}
   }).catch(()=>{$('code').textContent='Camera blocked. Allow camera access in your browser settings and reload.';});}
 let ocrOn=false,ocrStream=null,worker=null;
 async function toggleOcr(){if(ocrOn){stopOcr();return;}
-  if(reader)reader.reset();ocrOn=true;$('ocrBtn').textContent='✓ Done';$('ocrBox').style.display='block';$('cam').classList.remove('locked');$('cam').classList.add('ocring');
+  if(reader)reader.reset();ocrOn=true;$('ocrBtn').textContent='✓ Done';$('ocrBox').style.display='block';$('cam').classList.remove('locked');$('cam').classList.add('ocring');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span> <b>Step 2:</b> point at the product name';
   try{ocrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});const v=$('v');v.srcObject=ocrStream;await v.play();}
   catch(e){$('ocrSt').textContent='Camera blocked. Allow camera access and try again.';stopOcr();return;}
   if(!worker){$('ocrSt').textContent='Loading text reader (first time only)...';worker=await Tesseract.createWorker('eng');}
@@ -107,7 +107,7 @@ async function ocrLoop(){const v=$('v'),c=document.createElement('canvas');
         if(ocrOn&&t){$('name').value=t.slice(0,80);$('ocrSt').textContent='Got: "'+t.slice(0,80)+'"';}else if(ocrOn)$('ocrSt').textContent='No text yet. Hold steady and move closer.';}catch(e){}}
     await new Promise(r=>setTimeout(r,400));}}
 function stopOcr(){ocrOn=false;if(ocrStream){ocrStream.getTracks().forEach(t=>t.stop());ocrStream=null;}
-  $('ocrBtn').textContent='📷 Read name from label';$('ocrBox').style.display='none';$('cam').classList.remove('ocring');if(code)$('cam').classList.add('locked');$('name').focus();}
+  $('ocrBtn').textContent='📷 Read name from label';$('ocrBox').style.display='none';$('cam').classList.remove('ocring');if(code){$('cam').classList.add('locked');$('code').innerHTML='<span class="pill">✓ UPC LOCKED</span> Confirm the name and tap Submit';}$('name').focus();}
 function clearFields(){['name','shelf','stock','comment'].forEach(f=>$(f).value='');}
 function resetScan(){if(ocrOn)stopOcr();if(reader)reader.reset();clearFields();$('st').textContent='';scan();}
 function save(){if(!code){$('st').textContent='⚠️ Scan a barcode first';return;}
