@@ -74,6 +74,8 @@ assert.strictEqual(chevron.title, 'Thomasville Chevron');
 assert.ok(chevron.html.includes('>Chevron<'));
 assert.ok(chevron.html.includes('Thomasville Chevron'));
 assert.ok(chevron.html.includes('Type UPC instead'));
+assert.ok(chevron.html.includes('Count individual items, not boxes or cartons. Example: a carton of 10 packs = 10.'));
+assert.ok(chevron.html.indexOf('qty-note') < chevron.html.indexOf('id="shelf"'));
 assert.ok(chevron.html.includes('id="p1"'));
 assert.ok(chevron.html.includes('id="manualUpc"'));
 
@@ -83,6 +85,7 @@ assert.strictEqual(outrun.title, 'Thomasville Outrun');
 assert.ok(outrun.html.includes('>Outrun<'));
 assert.ok(outrun.html.includes('Thomasville Outrun'));
 assert.ok(outrun.html.includes('Type UPC instead'));
+assert.ok(outrun.html.includes('Count individual items, not boxes or cartons. Example: a carton of 10 packs = 10.'));
 assert.strictEqual(
   chevron.html.replace(/Chevron/g, 'STORE').replace(/Thomasville STORE/g, 'NAME'),
   outrun.html.replace(/Outrun/g, 'STORE').replace(/Thomasville STORE/g, 'NAME')
@@ -98,5 +101,18 @@ assert.ok(gs.includes('sh.getRange(2, 1, 1, 7)'));
 assert.ok(gs.includes("d.store || ''"));
 assert.ok(gs.includes("sh.getRange(1, 7).setValue('Store')"));
 assert.ok(!/insertColumn|moveColumns|deleteColumn/.test(gs));
+
+const qtySandbox = { document: { title: '', body: { getAttribute(){ return 'Chevron'; }, insertAdjacentHTML(){} }, getElementById(){ return stub(); }, createElement(){ return stub(); }, querySelector(){ return stub(); } }, console, setTimeout, clearTimeout, performance: { now(){ return 0; } }, fetch(){ return Promise.resolve(); }, navigator: {} };
+qtySandbox.window = qtySandbox;
+vm.createContext(qtySandbox);
+vm.runInContext(fs.readFileSync('app.js', 'utf8'), qtySandbox, { filename: 'app.js' });
+assert.strictEqual(qtySandbox.hasQty('0'), true);
+assert.strictEqual(qtySandbox.hasQty(0), true);
+assert.strictEqual(qtySandbox.hasQty(''), false);
+assert.strictEqual(qtySandbox.hasQty('   '), false);
+assert.strictEqual(qtySandbox.hasQty('\n'), false);
+assert.strictEqual(qtySandbox.hasQty('4'), true);
+assert.ok(fs.readFileSync('app.js', 'utf8').includes("Enter shelf or stock quantity before saving"));
+assert.ok(fs.readFileSync('app.js', 'utf8').includes("$('shelf').focus()"));
 
 console.log('store pages share one scanner');
