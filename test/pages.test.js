@@ -45,7 +45,7 @@ function render(label, name) {
   sandbox.window = sandbox;
   vm.createContext(sandbox);
   vm.runInContext(fs.readFileSync('app.js', 'utf8'), sandbox, { filename: 'app.js' });
-  return { title: sandbox.document.title, html: inserted.join('\n') };
+  return { title: sandbox.document.title, html: inserted.join('\n'), store: sandbox.STORE_LABEL };
 }
 
 function page(file) {
@@ -69,6 +69,7 @@ assert.ok(outrunPage.includes('src="app.js"'));
 assert.ok(outrunPage.includes('src="scanner.js"'));
 
 const chevron = render('Chevron', 'Thomasville Chevron');
+assert.strictEqual(chevron.store, 'Chevron');
 assert.strictEqual(chevron.title, 'Thomasville Chevron');
 assert.ok(chevron.html.includes('>Chevron<'));
 assert.ok(chevron.html.includes('Thomasville Chevron'));
@@ -77,6 +78,7 @@ assert.ok(chevron.html.includes('id="p1"'));
 assert.ok(chevron.html.includes('id="manualUpc"'));
 
 const outrun = render('Outrun', 'Thomasville Outrun');
+assert.strictEqual(outrun.store, 'Outrun');
 assert.strictEqual(outrun.title, 'Thomasville Outrun');
 assert.ok(outrun.html.includes('>Outrun<'));
 assert.ok(outrun.html.includes('Thomasville Outrun'));
@@ -86,8 +88,15 @@ assert.strictEqual(
   outrun.html.replace(/Outrun/g, 'STORE').replace(/Thomasville STORE/g, 'NAME')
 );
 
-assert.ok(app.includes("const it={code,name:$('name').value.trim(),shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value}"));
-assert.ok(!/it\s*=\s*\{[^}]*\bstore\b/.test(app), 'save payload must not add a store field');
+assert.ok(app.includes("const it={code,name:$('name').value.trim(),shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value,store:STORE_LABEL}"));
+assert.ok(app.includes("STORE_LABEL = label") || app.includes('STORE_LABEL = label'));
 assert.ok(app.includes('ScannerKit'));
+
+const gs = fs.readFileSync('Code.gs', 'utf8');
+assert.ok(gs.includes("['Timestamp','Barcode','Product','Shelf Qty','Stock Qty','Comment','Store']"));
+assert.ok(gs.includes('sh.getRange(2, 1, 1, 7)'));
+assert.ok(gs.includes("d.store || ''"));
+assert.ok(gs.includes("sh.getRange(1, 7).setValue('Store')"));
+assert.ok(!/insertColumn|moveColumns|deleteColumn/.test(gs));
 
 console.log('store pages share one scanner');
