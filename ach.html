@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12344d">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://script.google.com https://script.googleusercontent.com; form-action 'none'; base-uri 'none'; object-src 'none'">
+<title>Varsa Group LLC – ACH Payment Setup</title>
+<link rel="stylesheet" href="ach.css">
+</head>
+<body>
+<header>
+  <p>Varsa Group LLC</p>
+  <h1>ACH Payment Setup</h1>
+</header>
+<main>
+  <div id="ach-status" role="alert" aria-live="assertive"></div>
+  <form id="ach-form" class="card" method="post" action="#" autocomplete="off" novalidate>
+    <p class="lede">Tell Varsa Group LLC where to send your payments. Your account number stays hidden while you type, and this page does not show your details again after you submit.</p>
+
+    <h2>About you</h2>
+    <label for="fullName">Full name</label>
+    <input id="fullName" name="fullName" type="text" autocomplete="name" required maxlength="120">
+
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254">
+
+    <label for="phone">Phone number</label>
+    <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40">
+
+    <label for="address">Mailing address</label>
+    <textarea id="address" name="address" autocomplete="street-address" required maxlength="400" rows="3"></textarea>
+
+    <label for="purpose">Purpose</label>
+    <select id="purpose" name="purpose" required>
+      <option value="">Select…</option>
+      <option>Employee</option>
+      <option>Vendor</option>
+      <option>Other</option>
+    </select>
+    <div id="explain-wrap" hidden>
+      <label for="purposeDetail">Please explain</label>
+      <textarea id="purposeDetail" name="purposeDetail" maxlength="400" rows="3"></textarea>
+    </div>
+
+    <h2>Bank account</h2>
+    <label for="bankName">Bank name</label>
+    <input id="bankName" name="bankName" type="text" autocomplete="off" required maxlength="120">
+
+    <fieldset>
+      <legend>Account type</legend>
+      <div class="choices">
+        <label class="choice"><input id="accountChecking" type="radio" name="accountType" value="Checking" required> Checking</label>
+        <label class="choice"><input id="accountSavings" type="radio" name="accountType" value="Savings"> Savings</label>
+      </div>
+    </fieldset>
+
+    <label for="accountNumber">Account number</label>
+    <input id="accountNumber" name="accountNumber" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="17" data-1p-ignore data-lpignore="true">
+    <p class="hint">Digits only. Hidden for privacy.</p>
+
+    <label for="confirmAccount">Confirm account number</label>
+    <input id="confirmAccount" name="confirmAccount" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="17" data-1p-ignore data-lpignore="true">
+
+    <label for="routingNumber">ABA / routing number</label>
+    <input id="routingNumber" name="routingNumber" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="9">
+    <p class="hint">Exactly 9 digits. On a check, this is the number on the bottom left.</p>
+
+    <label for="memo">Memo <span class="opt">(optional)</span></label>
+    <textarea id="memo" name="memo" maxlength="500" rows="3"></textarea>
+
+    <label class="check" for="authorization">
+      <input id="authorization" name="authorization" type="checkbox" required>
+      <span>I authorize Varsa Group LLC to send payments to the bank account above.</span>
+    </label>
+
+    <button id="submitBtn" type="submit">Submit payment details</button>
+  </form>
+
+  <section id="thanks" class="card success" hidden>
+    <h2>Thank you</h2>
+    <p>Varsa Group LLC received your payment details. You can close this page.</p>
+  </section>
+  <noscript><p class="card noscript">This page needs JavaScript to submit your payment details.</p></noscript>
+</main>
+<script src="ach.js"></script>
+</body>
+</html>

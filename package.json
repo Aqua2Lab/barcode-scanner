@@ -4,7 +4,7 @@
   "description": "Simple camera barcode scanner. Scan, enter product name, shelf qty, stock qty and comment, then Save. Each save adds a timestamped row (newest on top) to a Google Sheet through an Apps Script web app (`Code.gs`).",
   "private": true,
   "scripts": {
-    "test": "node test/decode.test.js && node test/pages.test.js"
+    "test": "node test/decode.test.js && node test/pages.test.js && node test/ach.test.js"
   },
   "repository": {
     "type": "git",
