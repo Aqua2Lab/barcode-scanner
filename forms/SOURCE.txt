@@ -1,0 +1,14 @@
+fw4-2026.pdf
+  Official IRS Form W-4 (2026), created 12/8/25. Fillable AcroForm fields.
+  https://www.irs.gov/pub/irs-pdf/fw4.pdf
+  sha256 92444d8856ce55d9e25dca8b6d1420634fc68b11e1ab1f760916ea29ddd312b2
+
+i-9.pdf
+  Official USCIS Form I-9, Edition 01/20/25, expires 05/31/2027.
+  https://www.uscis.gov/sites/default/files/document/forms/i-9.pdf
+  The file published on https://www.uscis.gov/i-9 is listed as 511.81 KB.
+  sha256 780f348c34df694bb0b4dbbfaf9f22b99b9757b80d16a37ba89aadf069597281
+
+These are U.S. government forms bundled so the onboarding page can fill them
+in the browser. Replace both files together if IRS or USCIS publishes a new
+edition, and update the Step 3 dollar amounts in onboarding.js to match.

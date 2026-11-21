@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12344d">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; form-action 'none'; base-uri 'none'; object-src 'none'">
+<title>Varsa Group LLC – New Hire Onboarding</title>
+<link rel="stylesheet" href="onboarding.css">
+</head>
+<body>
+<header>
+  <p>Varsa Group LLC</p>
+  <h1>New Hire Onboarding</h1>
+</header>
+<main>
+  <div id="onboarding-status" role="alert" aria-live="assertive"></div>
+  <form id="onboarding-form" class="card" method="post" action="#" autocomplete="off" novalidate>
+    <p class="lede">New hires at Varsa Group LLC (Thomasville, Alabama) can complete this on a phone. It collects your Form W-4, Form I-9 Section 1, and photos of your work documents. The page sends them only to the company’s private onboarding sheet. It does not store what you type on this phone.</p>
+    <nav class="jumps" aria-label="Sections">
+      <a href="#personal">Personal</a>
+      <a href="#w4">Form W-4</a>
+      <a href="#i9">Form I-9</a>
+      <a href="#sign">Sign</a>
+    </nav>
+
+    <h2 id="personal">1. Personal information</h2>
+    <div class="row2">
+      <div>
+        <label for="legalFirst">Legal first name</label>
+        <input id="legalFirst" name="legalFirst" type="text" autocomplete="given-name" required maxlength="40">
+      </div>
+      <div>
+        <label for="legalMiddle">Middle initial <span class="opt">(if any)</span></label>
+        <input id="legalMiddle" name="legalMiddle" type="text" maxlength="1" autocapitalize="characters">
+      </div>
+    </div>
+    <label for="legalLast">Legal last name</label>
+    <input id="legalLast" name="legalLast" type="text" autocomplete="family-name" required maxlength="40">
+    <label for="otherLastNames">Other last names used <span class="opt">(maiden name or other legal last names, if any)</span></label>
+    <input id="otherLastNames" name="otherLastNames" type="text" maxlength="80">
+    <p class="hint">Leave this blank if you have none. Form I-9 will show N/A.</p>
+
+    <label for="street">Street number and name</label>
+    <input id="street" name="street" type="text" autocomplete="address-line1" required maxlength="80">
+    <label for="apt">Apt. number <span class="opt">(if any)</span></label>
+    <input id="apt" name="apt" type="text" autocomplete="address-line2" maxlength="20">
+    <div class="row2">
+      <div>
+        <label for="city">City or town</label>
+        <input id="city" name="city" type="text" autocomplete="address-level2" required maxlength="40">
+      </div>
+      <div>
+        <label for="state">State</label>
+        <select id="state" name="state" autocomplete="address-level1" required></select>
+      </div>
+    </div>
+    <label for="zip">ZIP code</label>
+    <input id="zip" name="zip" type="text" inputmode="numeric" autocomplete="postal-code" required maxlength="7">
+    <p class="hint">5 digits. Canadian addresses use the postal code.</p>
+
+    <label for="phone">Phone number</label>
+    <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40">
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254">
+    <label for="dob">Date of birth</label>
+    <input id="dob" name="dob" type="date" autocomplete="bday" required>
+
+    <h3>Emergency contact</h3>
+    <label for="emergencyName">Name</label>
+    <input id="emergencyName" name="emergencyName" type="text" autocomplete="off" required maxlength="40">
+    <label for="emergencyRelationship">Relationship</label>
+    <input id="emergencyRelationship" name="emergencyRelationship" type="text" autocomplete="off" required maxlength="40">
+    <label for="emergencyPhone">Phone number</label>
+    <input id="emergencyPhone" name="emergencyPhone" type="tel" autocomplete="off" inputmode="tel" required maxlength="40">
+
+    <label for="store">Store</label>
+    <select id="store" name="store" required>
+      <option value="">Select…</option>
+      <option>Thomasville Chevron</option>
+      <option>Thomasville Outrun</option>
+    </select>
+    <label for="position">Position</label>
+    <select id="position" name="position" required>
+      <option value="">Select…</option>
+      <option>Cashier</option>
+      <option>Sales associate</option>
+      <option>Food service</option>
+      <option>Shift lead</option>
+      <option>Assistant manager</option>
+      <option>Store manager</option>
+      <option>Maintenance</option>
+      <option>Other</option>
+    </select>
+    <div id="position-detail" hidden>
+      <label for="positionDetail">Position, if other</label>
+      <input id="positionDetail" name="positionDetail" type="text" maxlength="80">
+    </div>
+
+    <h2 id="w4">2. Form W-4 (2026)</h2>
+    <p class="instructions">Employee’s Withholding Certificate. Complete Form W-4 so that your employer can withhold the correct federal income tax from your pay. Your withholding is subject to review by the IRS. The full form, including the worksheets, is at <a href="https://www.irs.gov/pub/irs-pdf/fw4.pdf" target="_blank" rel="noopener">irs.gov/pub/irs-pdf/fw4.pdf</a>. The estimator is at <a href="https://www.irs.gov/W4App" target="_blank" rel="noopener">www.irs.gov/W4App</a>.</p>
+
+    <h3>Step 1(a). Enter personal information</h3>
+    <p class="hint">Name and address come from the personal section above. Does your name match the name on your social security card? If not, to ensure you get credit for your earnings, contact SSA at 800-772-1213 or go to www.ssa.gov.</p>
+
+    <h3>Step 1(b). Social security number</h3>
+    <label for="ssn">Social security number</label>
+    <input id="ssn" name="ssn" type="password" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="11" data-1p-ignore data-lpignore="true">
+    <p class="hint">Digits only. Hidden for privacy. This number is also printed on Form I-9.</p>
+    <label for="ssnConfirm">Confirm social security number</label>
+    <input id="ssnConfirm" name="ssnConfirm" type="password" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" required maxlength="11" data-1p-ignore data-lpignore="true">
+
+    <div id="w4-rest">
+      <h3>Step 1(c). Filing status</h3>
+      <p class="instructions">Check your anticipated filing status. This will determine the standard deduction and tax rates used to compute your withholding. Caution: To claim certain credits or deductions on your tax return, you (and/or your spouse if married filing jointly) are required to have a social security number valid for employment.</p>
+      <fieldset>
+        <legend>Step 1(c)</legend>
+        <div class="choices stack">
+          <label class="choice"><input id="filingSingle" type="radio" name="filingStatus" value="single" required> Single or Married filing separately</label>
+          <label class="choice"><input id="filingMarried" type="radio" name="filingStatus" value="married"> Married filing jointly or Qualifying surviving spouse</label>
+          <label class="choice"><input id="filingHoh" type="radio" name="filingStatus" value="hoh"> Head of household <span class="opt">(Check only if you’re unmarried and pay more than half the costs of keeping up a home for yourself and a qualifying individual.)</span></label>
+        </div>
+      </fieldset>
+      <p class="instructions">TIP: Consider using the estimator at www.irs.gov/W4App to determine the most accurate withholding for the rest of the year if you: are completing this form after the beginning of the year; expect to work only part of the year; or have changes during the year in your marital status, number of jobs for you (and/or your spouse if married filing jointly), dependents, other income (not from jobs), deductions, or credits. Have your most recent pay stub(s) from this year available when using the estimator. At the beginning of next year, use the estimator again to recheck your withholding. Complete Steps 2–4 ONLY if they apply to you; otherwise, skip to Step 5. If you’re a nonresident alien, see Notice 1392 before completing this form.</p>
+
+      <h3>Step 2. Multiple jobs or spouse works</h3>
+      <p class="instructions">Complete this step if you (1) hold more than one job at a time, or (2) are married filing jointly and your spouse also works. The correct amount of withholding depends on income earned from all of these jobs. Do only one of the following. (a) Use the estimator at www.irs.gov/W4App for the most accurate withholding for this step (and Steps 3–4). If you or your spouse have self-employment income, use this option; or (b) Use the Multiple Jobs Worksheet on page 3 of Form W-4 and enter the result in Step 4(c) below; or (c) If there are only two jobs total, you may check this box. Do the same on Form W-4 for the other job. This option is generally more accurate than Step 2(b) if pay at the lower paying job is more than half of the pay at the higher paying job. Otherwise, Step 2(b) is more accurate.</p>
+      <label class="check" for="twoJobs">
+        <input id="twoJobs" name="twoJobs" type="checkbox">
+        <span>Step 2(c). There are only two jobs total. I will also check this box on the Form W-4 for the other job.</span>
+      </label>
+      <p class="hint">Complete Steps 3–4(b) on Form W-4 for only ONE of these jobs. Leave those steps blank for the other jobs. Your withholding will be most accurate if you complete Steps 3–4(b) on the Form W-4 for the highest paying job.</p>
+
+      <h3>Step 3. Claim dependent and other credits</h3>
+      <p class="instructions">If your total income will be $200,000 or less ($400,000 or less if married filing jointly): (a) Multiply the number of qualifying children under age 17 by $2,200. (b) Multiply the number of other dependents by $500. Add the amounts from Steps 3(a) and 3(b), plus the amount for other credits. Enter the total here.</p>
+      <label for="childCount">Qualifying children under age 17</label>
+      <input id="childCount" name="childCount" type="text" inputmode="numeric" maxlength="2">
+      <label for="otherDependentCount">Other dependents</label>
+      <input id="otherDependentCount" name="otherDependentCount" type="text" inputmode="numeric" maxlength="2">
+      <label for="otherCredits">Other credits, whole dollars <span class="opt">(optional)</span></label>
+      <input id="otherCredits" name="otherCredits" type="text" inputmode="numeric" maxlength="7">
+      <p id="creditMath" class="calc"></p>
+
+      <h3>Step 4. Other adjustments</h3>
+      <p class="instructions">(a) Other income (not from jobs). If you want tax withheld for other income you expect this year that won’t have withholding, enter the amount of other income here. This may include interest, dividends, and retirement income. (b) Deductions. Use the Deductions Worksheet on page 4 of Form W-4 and enter the result here. If you skip this line, your withholding will be based on the standard deduction. (c) Extra withholding. Enter any additional tax you want withheld each pay period.</p>
+      <label for="otherIncome">4(a) Other income <span class="opt">(optional, whole dollars)</span></label>
+      <input id="otherIncome" name="otherIncome" type="text" inputmode="numeric" maxlength="7">
+      <label for="deductions">4(b) Deductions <span class="opt">(optional, whole dollars)</span></label>
+      <input id="deductions" name="deductions" type="text" inputmode="numeric" maxlength="7">
+      <label for="extraWithholding">4(c) Extra withholding <span class="opt">(optional, whole dollars each pay period)</span></label>
+      <input id="extraWithholding" name="extraWithholding" type="text" inputmode="numeric" maxlength="7">
+    </div>
+
+    <h3>Exempt from withholding</h3>
+    <p class="instructions">You may claim exemption from withholding for 2026 if you meet both of the following conditions: you had no federal income tax liability in 2025 and you expect to have no federal income tax liability in 2026. You had no federal income tax liability in 2025 if (1) your total tax on line 24 on your 2025 Form 1040 or 1040-SR is zero (or less than the sum of lines 27a, 28, 29, and 30), or (2) you were not required to file a return because your income was below the filing threshold for your correct filing status. If you claim exemption, you will have no income tax withheld from your paycheck and may owe taxes and penalties when you file your 2026 tax return. To claim exemption from withholding, certify that you meet both of the conditions by checking the box below. Then, complete Steps 1(a), 1(b), and 5. Do not complete any other steps. You will need to submit a new Form W-4 by February 16, 2027.</p>
+    <label class="check" for="exempt">
+      <input id="exempt" name="exempt" type="checkbox">
+      <span>I claim exemption from withholding for 2026, and I certify that I meet both of the conditions for exemption for 2026. I understand I will need to submit a new Form W-4 for 2027.</span>
+    </label>
+
+    <h2 id="i9">3. Form I-9, Section 1</h2>
+    <p class="instructions">Employment Eligibility Verification, Edition 01/20/25, expires 05/31/2027. Employees must complete and sign Section 1 no later than the first day of employment, but not before accepting a job offer. Employers must make the instructions available. Read them at <a href="https://www.uscis.gov/i-9" target="_blank" rel="noopener">uscis.gov/i-9</a>.</p>
+    <p class="notice">Anti-discrimination notice: All employees can choose which acceptable documentation to present for Form I-9. Employers cannot ask employees for documentation to verify information in Section 1, or specify which acceptable documentation employees must present for Section 2 or Supplement B, Reverification and Rehire. Treating employees differently based on their citizenship, immigration status, or national origin may be illegal.</p>
+    <p class="hint">These Section 1 lines use the personal information above. To change one, edit that section.</p>
+    <label for="i9Last">Last name (family name)</label>
+    <input id="i9Last" type="text" readonly tabindex="-1">
+    <label for="i9First">First name (given name)</label>
+    <input id="i9First" type="text" readonly tabindex="-1">
+    <label for="i9Middle">Middle initial (if any)</label>
+    <input id="i9Middle" type="text" readonly tabindex="-1">
+    <label for="i9Other">Other last names used (if any)</label>
+    <input id="i9Other" type="text" readonly tabindex="-1">
+    <label for="i9Street">Address (street number and name)</label>
+    <input id="i9Street" type="text" readonly tabindex="-1">
+    <label for="i9Apt">Apt. number (if any)</label>
+    <input id="i9Apt" type="text" readonly tabindex="-1">
+    <label for="i9City">City or town</label>
+    <input id="i9City" type="text" readonly tabindex="-1">
+    <div class="row2">
+      <div>
+        <label for="i9State">State</label>
+        <input id="i9State" type="text" readonly tabindex="-1">
+      </div>
+      <div>
+        <label for="i9Zip">ZIP code</label>
+        <input id="i9Zip" type="text" readonly tabindex="-1">
+      </div>
+    </div>
+    <label for="i9Dob">Date of birth (mm/dd/yyyy)</label>
+    <input id="i9Dob" type="text" readonly tabindex="-1">
+    <p id="i9SsnMask" class="hint">The Social Security number from Form W-4, Step 1(b), is printed on Form I-9.</p>
+    <label for="i9Email">Employee’s email address</label>
+    <input id="i9Email" type="text" readonly tabindex="-1">
+    <label for="i9Phone">Employee’s telephone number</label>
+    <input id="i9Phone" type="text" readonly tabindex="-1">
+
+    <h3>Citizenship or immigration status</h3>
+    <p class="instructions">I am aware that federal law provides for imprisonment and/or fines for false statements, or the use of false documents, in connection with the completion of this form. I attest, under penalty of perjury, that this information, including my selection of the box attesting to my citizenship or immigration status, is true and correct. Check one of the following boxes to attest to your citizenship or immigration status (see page 2 and 3 of the instructions).</p>
+    <fieldset>
+      <legend>Check one</legend>
+      <div class="choices stack">
+        <label class="choice"><input id="statusCitizen" type="radio" name="i9Status" value="citizen" required> 1. A citizen of the United States</label>
+        <label class="choice"><input id="statusNational" type="radio" name="i9Status" value="national"> 2. A noncitizen national of the United States (See Instructions.)</label>
+        <label class="choice"><input id="statusResident" type="radio" name="i9Status" value="resident"> 3. A lawful permanent resident (Enter USCIS or A-Number.)</label>
+        <label class="choice"><input id="statusAlien" type="radio" name="i9Status" value="alien"> 4. An alien authorized to work until (exp. date, if any)</label>
+      </div>
+    </fieldset>
+    <div id="i9-resident" hidden>
+      <label for="lprNumber">USCIS or A-Number</label>
+      <input id="lprNumber" name="lprNumber" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12">
+      <p class="hint">Example: A123456789.</p>
+    </div>
+    <div id="i9-alien" hidden>
+      <label for="workUntil">Expiration date, if any</label>
+      <input id="workUntil" name="workUntil" type="date">
+      <p class="instructions">If you check Item Number 4., enter one of these:</p>
+      <label for="alienNumber">USCIS A-Number</label>
+      <input id="alienNumber" name="alienNumber" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12">
+      <label for="i94Number">Form I-94 admission number</label>
+      <input id="i94Number" name="i94Number" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="11">
+      <label for="foreignPassport">Foreign passport number</label>
+      <input id="foreignPassport" name="foreignPassport" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="20">
+      <label for="passportCountry">Country of issuance</label>
+      <input id="passportCountry" name="passportCountry" type="text" autocomplete="off" maxlength="40">
+      <p class="hint">Enter only one: the A-Number, or the Form I-94 admission number, or the foreign passport number and country.</p>
+    </div>
+
+    <h3>Preparer or translator</h3>
+    <p class="instructions">If a preparer and/or translator assisted you in completing Section 1, that person MUST complete the Preparer and/or Translator Certification on page 3 of Form I-9. I attest, under penalty of perjury, that I have assisted in the completion of Section 1 of this form and that to the best of my knowledge the information is true and correct.</p>
+    <fieldset>
+      <legend>Did a preparer or translator help you?</legend>
+      <div class="choices stack">
+        <label class="choice"><input id="preparerNo" type="radio" name="preparerUsed" value="no" checked> No. I completed Section 1 myself.</label>
+        <label class="choice"><input id="preparerYes" type="radio" name="preparerUsed" value="yes"> Yes. A preparer or translator assisted me.</label>
+      </div>
+    </fieldset>
+    <div id="preparer-fields" hidden>
+      <label for="preparerFirst">Preparer or translator first name (given name)</label>
+      <input id="preparerFirst" name="preparerFirst" type="text" maxlength="40">
+      <label for="preparerMiddle">Middle initial <span class="opt">(if any)</span></label>
+      <input id="preparerMiddle" name="preparerMiddle" type="text" maxlength="1" autocapitalize="characters">
+      <label for="preparerLast">Last name (family name)</label>
+      <input id="preparerLast" name="preparerLast" type="text" maxlength="40">
+      <label for="preparerStreet">Address (street number and name)</label>
+      <input id="preparerStreet" name="preparerStreet" type="text" maxlength="80">
+      <label for="preparerCity">City or town</label>
+      <input id="preparerCity" name="preparerCity" type="text" maxlength="40">
+      <div class="row2">
+        <div>
+          <label for="preparerState">State</label>
+          <select id="preparerState" name="preparerState"></select>
+        </div>
+        <div>
+          <label for="preparerZip">ZIP code</label>
+          <input id="preparerZip" name="preparerZip" type="text" maxlength="7">
+        </div>
+      </div>
+      <label for="preparerSignature">Preparer or translator typed signature</label>
+      <input id="preparerSignature" name="preparerSignature" type="text" maxlength="90" autocomplete="off">
+      <p class="hint">They type their own legal name. That name is their signature on Supplement A.</p>
+    </div>
+
+    <h3>Acceptable documents</h3>
+    <p class="instructions">All documents containing an expiration date must be unexpired. Documents extended by the issuing authority are considered unexpired. Employees may present one selection from List A, or a combination of one selection from List B and one selection from List C. Examples of many of these documents appear in the Handbook for Employers (M-274). Your manager examines the original documents. These photos are for the onboarding file.</p>
+    <fieldset>
+      <legend>What are you uploading?</legend>
+      <div class="choices stack">
+        <label class="choice"><input id="docPathA" type="radio" name="docPath" value="A" required> One document from List A</label>
+        <label class="choice"><input id="docPathBC" type="radio" name="docPath" value="BC"> One document from List B and one from List C</label>
+      </div>
+    </fieldset>
+
+    <h3>List A. Documents that establish both identity and employment authorization</h3>
+    <div id="listAItems"></div>
+    <div id="docs-a" hidden>
+      <label for="listA">List A document</label>
+      <select id="listA" name="listA"></select>
+      <label for="listAFront">Photo of the front</label>
+      <input id="listAFront" name="listAFront" type="file" accept="image/*" data-slot="listA-front">
+      <img id="listAFrontPreview" class="preview" alt="" hidden>
+      <label for="listABack">Photo of the back</label>
+      <input id="listABack" name="listABack" type="file" accept="image/*" data-slot="listA-back">
+      <img id="listABackPreview" class="preview" alt="" hidden>
+      <label class="check" for="listANoBack"><input id="listANoBack" name="listANoBack" type="checkbox"><span>This document has no second side.</span></label>
+      <div id="docs-a2" hidden>
+        <label id="listA2Label" for="listA2Front">Photo of Form I-94 or Form I-94A (front)</label>
+        <input id="listA2Front" name="listA2Front" type="file" accept="image/*" data-slot="listA2-front">
+        <img id="listA2FrontPreview" class="preview" alt="" hidden>
+        <label for="listA2Back">Photo of the back</label>
+        <input id="listA2Back" name="listA2Back" type="file" accept="image/*" data-slot="listA2-back">
+        <img id="listA2BackPreview" class="preview" alt="" hidden>
+        <label class="check" for="listA2NoBack"><input id="listA2NoBack" name="listA2NoBack" type="checkbox"><span>This document has no second side.</span></label>
+      </div>
+    </div>
+
+    <h3>List B. Documents that establish identity</h3>
+    <div id="listBItems"></div>
+    <h3>List C. Documents that establish employment authorization</h3>
+    <div id="listCItems"></div>
+    <div id="docs-bc" hidden>
+      <label for="listB">List B document</label>
+      <select id="listB" name="listB"></select>
+      <label for="listBFront">List B photo, front</label>
+      <input id="listBFront" name="listBFront" type="file" accept="image/*" data-slot="listB-front">
+      <img id="listBFrontPreview" class="preview" alt="" hidden>
+      <label for="listBBack">List B photo, back</label>
+      <input id="listBBack" name="listBBack" type="file" accept="image/*" data-slot="listB-back">
+      <img id="listBBackPreview" class="preview" alt="" hidden>
+      <label class="check" for="listBNoBack"><input id="listBNoBack" name="listBNoBack" type="checkbox"><span>This List B document has no second side.</span></label>
+      <label for="listC">List C document</label>
+      <select id="listC" name="listC"></select>
+      <label for="listCFront">List C photo, front</label>
+      <input id="listCFront" name="listCFront" type="file" accept="image/*" data-slot="listC-front">
+      <img id="listCFrontPreview" class="preview" alt="" hidden>
+      <label for="listCBack">List C photo, back</label>
+      <input id="listCBack" name="listCBack" type="file" accept="image/*" data-slot="listC-back">
+      <img id="listCBackPreview" class="preview" alt="" hidden>
+      <label class="check" for="listCNoBack"><input id="listCNoBack" name="listCNoBack" type="checkbox"><span>This List C document has no second side.</span></label>
+    </div>
+
+    <h2 id="sign">4. Signature</h2>
+    <p class="instructions">Form W-4, Step 5: Under penalties of perjury, I declare that this certificate, to the best of my knowledge and belief, is true, correct, and complete. Employee’s signature (This form is not valid unless you sign it.)</p>
+    <p class="instructions">Form I-9, Section 1: I am aware that federal law provides for imprisonment and/or fines for false statements, or the use of false documents, in connection with the completion of this form. I attest, under penalty of perjury, that this information, including my selection of the box attesting to my citizenship or immigration status, is true and correct.</p>
+    <p class="hint">Today’s date: <strong id="signatureDate"></strong>. Your typed name is the last entry on this form. It is your signature on Form W-4 and on Form I-9 Section 1.</p>
+    <p class="notice">USCIS says the official fillable Form I-9 is not itself an electronic I-9 system, so your manager may also ask you to sign a printed copy by hand. Your typed name is still saved with this onboarding packet and placed on the copy you download.</p>
+    <label class="check" for="consent">
+      <input id="consent" name="consent" type="checkbox" required>
+      <span>I agree to sign Form W-4 and Form I-9 with my typed name. I made the declarations above by signing, and the information I entered is true and correct.</span>
+    </label>
+    <label for="signatureName">Type your full legal name</label>
+    <input id="signatureName" name="signatureName" type="text" autocomplete="name" required maxlength="90">
+    <button id="submitBtn" type="submit">Submit onboarding form</button>
+  </form>
+
+  <section id="thanks" class="card success" hidden>
+    <h2>Thank you</h2>
+    <p>Varsa Group LLC received your onboarding form. Save both PDFs for your records, then you can close this page. This page does not show your Social Security number again.</p>
+    <a id="downloadW4" class="download" hidden>Download filled Form W-4</a>
+    <a id="downloadI9" class="download secondary" hidden>Download filled Form I-9</a>
+  </section>
+  <noscript><p class="card noscript">This page needs JavaScript to submit your onboarding form.</p></noscript>
+</main>
+<script src="vendor/pdf-lib.min.js"></script>
+<script src="onboarding.js"></script>
+</body>
+</html>
