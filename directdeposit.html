@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Varsa Group, LLC — Employee Direct Deposit Authorization</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #4a4a4a;
+      --line: #cfcfcf;
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --accent: #1c2b4a;
+      --accent-2: #2a4068;
+      --error: #9b001a;
+      --focus: #2a5bd7;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", Calibri, Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.45;
+    }
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+    }
+    header.app-header {
+      background: var(--accent);
+      color: #fff;
+      padding: 22px 20px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+    }
+    header.app-header h1 {
+      margin: 0 0 4px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    header.app-header p { margin: 0; font-size: .95rem; opacity: .95; }
+    .intro, .confidential {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    .confidential {
+      border-left: 4px solid #9b001a;
+      color: #3a3a3a;
+    }
+    .confidential strong { color: #9b001a; }
+    form#dd-form section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px 16px 8px;
+      margin-bottom: 14px;
+    }
+    form#dd-form h2 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 6px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 14px;
+    }
+    .grid > * { min-width: 0; }
+    .span-2 { grid-column: 1 / -1; }
+    label.field { display: block; margin-bottom: 12px; }
+    label.field .lbl, fieldset legend {
+      display: block;
+      font-size: .82rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+    label.field .opt { font-weight: 500; color: var(--muted); }
+    .req { color: var(--error); font-weight: 700; }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="number"],
+    select {
+      width: 100%;
+      max-width: 100%;
+      padding: 10px 10px;
+      border: 1px solid #b8b8b8;
+      border-radius: 5px;
+      font-size: 16px;
+      font-family: inherit;
+      background: #fff;
+    }
+    input:focus, select:focus, button:focus, input:focus-visible, select:focus-visible, button:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+    input[type="radio"]:focus, input[type="checkbox"]:focus,
+    input[type="radio"]:focus-visible, input[type="checkbox"]:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+    input.invalid, select.invalid {
+      border-color: var(--error);
+      background: #fff6f6;
+    }
+    .error {
+      display: none;
+      color: var(--error);
+      font-size: .8rem;
+      margin-top: 3px;
+    }
+    .error.show { display: block; }
+    .hint { font-size: .8rem; color: var(--muted); margin: -6px 0 10px; }
+    fieldset {
+      border: 0;
+      margin: 0 0 8px;
+      padding: 0;
+      min-width: 0;
+    }
+    .radios, .checks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      margin: 4px 0 12px;
+    }
+    .radios label, .checks label, label.inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .95rem;
+      cursor: pointer;
+      min-height: 32px;
+    }
+    .partial-fields, .acct2-wrap { display: none; }
+    .partial-fields.open, .acct2-wrap.open { display: block; }
+    button.linkish {
+      background: none;
+      border: 1px dashed var(--accent-2);
+      color: var(--accent-2);
+      padding: 10px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: .95rem;
+      margin-bottom: 12px;
+      font-family: inherit;
+    }
+    button.linkish:hover { background: #eef1f6; }
+    .auth-box {
+      background: #f7f7f7;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: .92rem;
+      margin-bottom: 12px;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    button.primary, button.secondary {
+      border: 0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 650;
+      cursor: pointer;
+      font-family: inherit;
+      min-height: 44px;
+    }
+    button.primary { background: var(--accent); color: #fff; }
+    button.primary:hover { background: var(--accent-2); }
+    button.secondary { background: #e6e8ee; color: var(--ink); }
+    button.secondary:hover { background: #d7dae3; }
+    button.primary:disabled, button.secondary:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+    button.primary:disabled:hover { background: var(--accent); }
+    .submit-status {
+      display: none;
+      margin: 0 0 12px;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: .95rem;
+    }
+    .submit-status.success {
+      display: block;
+      background: #e8f5ee;
+      border: 1px solid #1b6b3a;
+      color: #14532d;
+      font-weight: 650;
+    }
+    .submit-status.error {
+      display: block;
+      background: #fdecea;
+      border: 1px solid #f5c2c0;
+      color: var(--error);
+    }
+    .submit-status.error button {
+      margin-top: 8px;
+      margin-left: 0;
+      display: inline-block;
+    }
+    .footnote {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-left: 4px solid #9b001a;
+      background: #fff;
+      font-size: .88rem;
+      color: #3a3a3a;
+    }
+    .form-error-banner {
+      display: none;
+      background: #fdecea;
+      color: var(--error);
+      border: 1px solid #f5c2c0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: .92rem;
+    }
+    .form-error-banner.show { display: block; }
+    #print-sheet { display: none; }
+    #print-sheet.preview-on-screen {
+      display: block;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 24px 28px;
+      margin: 18px 0 8px;
+      color: #000;
+      overflow-wrap: anywhere;
+    }
+    .screen-only-note { font-size: .85rem; color: var(--muted); margin: 0 0 8px; }
+    #print-sheet h1 { font-size: 16pt; margin: 0 0 2px; text-align: center; color: #000; }
+    #print-sheet .sub { text-align: center; font-size: 10pt; margin: 0 0 10px; }
+    #print-sheet .rule { border-top: 2px solid #000; margin: 0 0 8px; }
+    #print-sheet h2 {
+      font-size: 11pt; margin: 8px 0 4px; border-bottom: 1px solid #000;
+      padding-bottom: 2px; color: #000;
+    }
+    #print-sheet table { width: 100%; border-collapse: collapse; font-size: 10pt; }
+    #print-sheet td { padding: 2px 8px 2px 0; vertical-align: top; overflow-wrap: anywhere; }
+    #print-sheet td.k { width: 38%; font-weight: 600; }
+    #print-sheet .auth-print { font-size: 9.5pt; margin: 6px 0; line-height: 1.35; }
+    #print-sheet .sig-row {
+      display: flex; justify-content: space-between; gap: 16px;
+      margin-top: 14px; font-size: 10pt;
+    }
+    #print-sheet .sig-block { width: 58%; }
+    #print-sheet .date-block { width: 36%; }
+    #print-sheet .sig-line {
+      border-bottom: 1px solid #000; min-height: 22px; margin-top: 2px;
+      font-family: "Segoe UI", "Palatino Linotype", Georgia, serif;
+      font-size: 13pt; font-style: italic; overflow-wrap: anywhere;
+    }
+    #print-sheet .attach {
+      margin-top: 10px; border: 1px solid #000; padding: 6px 8px;
+      font-size: 10pt; font-weight: 600;
+    }
+    #print-sheet .fine { margin-top: 8px; font-size: 8pt; color: #000; }
+
+    @media (max-width: 620px) {
+      .grid { grid-template-columns: 1fr; }
+      .span-2 { grid-column: auto; }
+      header.app-header h1 { font-size: 1.15rem; }
+      .actions { flex-direction: column; }
+      button.primary, button.secondary { width: 100%; }
+    }
+
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .wrap { max-width: none; padding: 0; margin: 0; }
+      .no-print, form#dd-form, header.app-header, .intro, .confidential, .footnote,
+      .form-error-banner, .screen-only-note, .actions, .submit-status { display: none !important; }
+      #print-sheet, #print-sheet.preview-on-screen {
+        display: block !important;
+        border: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        color: #000 !important;
+        background: #fff !important;
+      }
+      @page { size: letter; margin: 0.55in; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="app-header no-print">
+      <h1>Varsa Group, LLC — Employee Direct Deposit Authorization</h1>
+      <p>Complete this form to set up payroll direct deposit. Managing Member &amp; CEO: Varun Shah.</p>
+    </header>
+
+    <p class="intro no-print">
+      Enter your information below, then submit it to Varsa Group management. You may also print or download a copy to hand in.
+      You may use a Regions Bank account or any other U.S. bank. Please have your routing and account numbers ready
+      (from a check or your bank’s official letter).
+    </p>
+
+    <p class="confidential no-print" id="confidentiality-notice">
+      <strong>CONFIDENTIAL.</strong> Submitting this form sends your details only to Varsa Group management.
+      Account details are sensitive. You may also print or download a copy to hand directly to Varun/management; do not email unencrypted.
+    </p>
+
+    <div id="form-error" class="form-error-banner no-print" role="alert" aria-live="assertive"></div>
+
+    <form id="dd-form" novalidate action="#" method="dialog">
+      <section aria-labelledby="sec-employee">
+        <h2 id="sec-employee">1. Employee information</h2>
+        <div class="grid">
+          <label class="field span-2" for="legalName">
+            <span class="lbl">Full legal name <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="legalName" name="legalName" autocomplete="name" required aria-required="true" aria-invalid="false" aria-describedby="legalName-error">
+            <span class="error" id="legalName-error" data-for="legalName" role="status">Enter your full legal name.</span>
+          </label>
+          <label class="field" for="empId">
+            <span class="lbl">Employee ID / position <span class="opt">(optional)</span></span>
+            <input type="text" id="empId" name="empId" placeholder="e.g. Cashier" autocomplete="organization-title">
+          </label>
+          <label class="field" for="store">
+            <span class="lbl">Store location <span class="req" aria-hidden="true">*</span></span>
+            <select id="store" name="store" required aria-required="true" aria-invalid="false" aria-describedby="store-error">
+              <option value="">Select a store</option>
+              <option value="Thomasville Chevron">Thomasville Chevron</option>
+              <option value="Thomasville OutRun">Thomasville OutRun</option>
+            </select>
+            <span class="error" id="store-error" data-for="store" role="status">Select your store location.</span>
+          </label>
+          <label class="field span-2" for="street">
+            <span class="lbl">Home address — street <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="street" name="street" autocomplete="address-line1" required aria-required="true" aria-invalid="false" aria-describedby="street-error">
+            <span class="error" id="street-error" data-for="street" role="status">Enter your street address.</span>
+          </label>
+          <label class="field" for="city">
+            <span class="lbl">City <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="city" name="city" autocomplete="address-level2" required aria-required="true" aria-invalid="false" aria-describedby="city-error">
+            <span class="error" id="city-error" data-for="city" role="status">Enter your city.</span>
+          </label>
+          <label class="field" for="state">
+            <span class="lbl">State <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="state" name="state" maxlength="2" placeholder="AL" autocomplete="address-level1" required aria-required="true" aria-invalid="false" aria-describedby="state-error" style="text-transform:uppercase">
+            <span class="error" id="state-error" data-for="state" role="status">Enter a 2-letter state code.</span>
+          </label>
+          <label class="field" for="zip">
+            <span class="lbl">ZIP <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="zip" name="zip" inputmode="numeric" autocomplete="postal-code" required aria-required="true" aria-invalid="false" aria-describedby="zip-error">
+            <span class="error" id="zip-error" data-for="zip" role="status">Enter a valid 5-digit (or ZIP+4) code.</span>
+          </label>
+          <label class="field" for="phone">
+            <span class="lbl">Phone <span class="req" aria-hidden="true">*</span></span>
+            <input type="tel" id="phone" name="phone" autocomplete="tel" required aria-required="true" aria-invalid="false" aria-describedby="phone-error">
+            <span class="error" id="phone-error" data-for="phone" role="status">Enter a 10-digit phone number.</span>
+          </label>
+          <label class="field" for="email">
+            <span class="lbl">Personal email <span class="req" aria-hidden="true">*</span></span>
+            <input type="email" id="email" name="email" autocomplete="email" required aria-required="true" aria-invalid="false" aria-describedby="email-error">
+            <span class="error" id="email-error" data-for="email" role="status">Enter a valid email address.</span>
+          </label>
+          <label class="field" for="ssn4">
+            <span class="lbl">Last 4 of SSN <span class="opt">(optional, for matching to payroll)</span></span>
+            <input type="text" id="ssn4" name="ssn4" inputmode="numeric" maxlength="4" placeholder="####" autocomplete="off" aria-invalid="false" aria-describedby="ssn4-error">
+            <span class="error" id="ssn4-error" data-for="ssn4" role="status">Enter exactly 4 digits, or leave blank.</span>
+          </label>
+        </div>
+      </section>
+
+      <section id="acct1-section" aria-labelledby="sec-bank">
+        <h2 id="sec-bank">2. Bank / deposit information (primary account)</h2>
+        <div class="grid">
+          <label class="field span-2" for="bank1">
+            <span class="lbl">Bank name <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="bank1" name="bank1" placeholder="e.g. Regions Bank" required aria-required="true" aria-invalid="false" aria-describedby="bank1-error" autocomplete="off">
+            <span class="error" id="bank1-error" data-for="bank1" role="status">Enter the bank name.</span>
+          </label>
+          <label class="field" for="routing1">
+            <span class="lbl">Bank routing number (9 digits) <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="routing1" name="routing1" inputmode="numeric" maxlength="9" required aria-required="true" aria-invalid="false" aria-describedby="routing1-error" autocomplete="off" spellcheck="false">
+            <span class="error" id="routing1-error" data-for="routing1" role="status">Enter a valid 9-digit ABA routing number.</span>
+          </label>
+          <label class="field" for="account1">
+            <span class="lbl">Account number <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="account1" name="account1" inputmode="numeric" maxlength="17" required aria-required="true" aria-invalid="false" aria-describedby="account1-error" autocomplete="off" spellcheck="false">
+            <span class="error" id="account1-error" data-for="account1" role="status">Enter the account number.</span>
+          </label>
+          <label class="field" for="account1confirm">
+            <span class="lbl">Re-enter account number <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="account1confirm" name="account1confirm" inputmode="numeric" maxlength="17" required aria-required="true" aria-invalid="false" aria-describedby="account1confirm-error" autocomplete="off" spellcheck="false">
+            <span class="error" id="account1confirm-error" data-for="account1confirm" role="status">Account numbers must match.</span>
+          </label>
+          <fieldset class="span-2">
+            <legend>Account type <span class="req" aria-hidden="true">*</span></legend>
+            <div class="radios">
+              <label><input type="radio" id="type1-checking" name="type1" value="Checking" checked> Checking</label>
+              <label><input type="radio" id="type1-savings" name="type1" value="Savings"> Savings</label>
+            </div>
+          </fieldset>
+          <fieldset class="span-2" id="depType-fieldset">
+            <legend>Deposit type <span class="req" aria-hidden="true">*</span></legend>
+            <div class="radios">
+              <label><input type="radio" id="depType-full" name="depType" value="full" checked> Full net pay</label>
+              <label><input type="radio" id="depType-partial" name="depType" value="partial"> Partial</label>
+            </div>
+            <div id="partial-fields" class="partial-fields">
+              <div class="radios">
+                <label><input type="radio" id="partialKind-amount" name="partialKind" value="amount" checked> Fixed dollar amount</label>
+                <label><input type="radio" id="partialKind-percent" name="partialKind" value="percent"> Percentage of net pay</label>
+              </div>
+              <label class="field" id="partial-amount-wrap" for="partialAmount">
+                <span class="lbl">Amount to deposit to this account ($) <span class="req" aria-hidden="true">*</span></span>
+                <input type="number" id="partialAmount" name="partialAmount" min="0.01" step="0.01" aria-invalid="false" aria-describedby="partialAmount-error">
+                <span class="error" id="partialAmount-error" data-for="partialAmount" role="status">Enter a dollar amount greater than 0.</span>
+              </label>
+              <label class="field" id="partial-percent-wrap" for="partialPercent" style="display:none">
+                <span class="lbl">Percent of net pay to deposit to this account <span class="req" aria-hidden="true">*</span></span>
+                <input type="number" id="partialPercent" name="partialPercent" min="1" max="99" step="1" aria-invalid="false" aria-describedby="partialPercent-error">
+                <span class="error" id="partialPercent-error" data-for="partialPercent" role="status">Enter a whole percent from 1 to 99.</span>
+              </label>
+              <p class="hint">If you add a second account below, that account receives the amount you specify there, and the remainder of net pay goes to this primary account.</p>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="button" class="linkish" id="toggle-acct2" aria-expanded="false" aria-controls="acct2-wrap">+ Add another account (split deposit)</button>
+        <div id="acct2-wrap" class="acct2-wrap" aria-hidden="true">
+          <h2 id="sec-bank2" style="font-size:1rem;margin:4px 0 12px;border-bottom:1px solid var(--line);color:var(--accent);padding-bottom:6px;">Second account (optional split)</h2>
+          <p class="hint">Specify how much goes to this second account. Any remainder of net pay is deposited to the primary account above.</p>
+          <div class="grid">
+            <label class="field span-2" for="bank2">
+              <span class="lbl">Bank name <span class="req" aria-hidden="true">*</span></span>
+              <input type="text" id="bank2" name="bank2" placeholder="e.g. Regions Bank" aria-invalid="false" aria-describedby="bank2-error" autocomplete="off">
+              <span class="error" id="bank2-error" data-for="bank2" role="status">Enter the bank name.</span>
+            </label>
+            <label class="field" for="routing2">
+              <span class="lbl">Bank routing number (9 digits) <span class="req" aria-hidden="true">*</span></span>
+              <input type="text" id="routing2" name="routing2" inputmode="numeric" maxlength="9" aria-invalid="false" aria-describedby="routing2-error" autocomplete="off" spellcheck="false">
+              <span class="error" id="routing2-error" data-for="routing2" role="status">Enter a valid 9-digit ABA routing number.</span>
+            </label>
+            <label class="field" for="account2">
+              <span class="lbl">Account number <span class="req" aria-hidden="true">*</span></span>
+              <input type="text" id="account2" name="account2" inputmode="numeric" maxlength="17" aria-invalid="false" aria-describedby="account2-error" autocomplete="off" spellcheck="false">
+              <span class="error" id="account2-error" data-for="account2" role="status">Enter the account number.</span>
+            </label>
+            <label class="field" for="account2confirm">
+              <span class="lbl">Re-enter account number <span class="req" aria-hidden="true">*</span></span>
+              <input type="text" id="account2confirm" name="account2confirm" inputmode="numeric" maxlength="17" aria-invalid="false" aria-describedby="account2confirm-error" autocomplete="off" spellcheck="false">
+              <span class="error" id="account2confirm-error" data-for="account2confirm" role="status">Account numbers must match.</span>
+            </label>
+            <fieldset class="span-2">
+              <legend>Account type <span class="req" aria-hidden="true">*</span></legend>
+              <div class="radios">
+                <label><input type="radio" id="type2-checking" name="type2" value="Checking" checked> Checking</label>
+                <label><input type="radio" id="type2-savings" name="type2" value="Savings"> Savings</label>
+              </div>
+            </fieldset>
+            <fieldset class="span-2">
+              <legend>Amount for this second account <span class="req" aria-hidden="true">*</span></legend>
+              <div class="radios">
+                <label><input type="radio" id="split2Kind-amount" name="split2Kind" value="amount" checked> Fixed dollar amount</label>
+                <label><input type="radio" id="split2Kind-percent" name="split2Kind" value="percent"> Percentage of net pay</label>
+              </div>
+              <label class="field" id="split2-amount-wrap" for="split2Amount">
+                <span class="lbl">Amount to deposit to this second account ($) <span class="req" aria-hidden="true">*</span></span>
+                <input type="number" id="split2Amount" name="split2Amount" min="0.01" step="0.01" aria-invalid="false" aria-describedby="split2Amount-error">
+                <span class="error" id="split2Amount-error" data-for="split2Amount" role="status">Enter a dollar amount greater than 0.</span>
+              </label>
+              <label class="field" id="split2-percent-wrap" for="split2Percent" style="display:none">
+                <span class="lbl">Percent of net pay to deposit to this second account <span class="req" aria-hidden="true">*</span></span>
+                <input type="number" id="split2Percent" name="split2Percent" min="1" max="99" step="1" aria-invalid="false" aria-describedby="split2Percent-error">
+                <span class="error" id="split2Percent-error" data-for="split2Percent" role="status">Enter a whole percent from 1 to 99.</span>
+              </label>
+            </fieldset>
+          </div>
+          <button type="button" class="linkish" id="remove-acct2">Remove second account</button>
+        </div>
+
+        <label class="inline" style="margin:8px 0 12px;">
+          <input type="checkbox" id="voidedCheck" name="voidedCheck">
+          I will attach a voided check or official bank letter with this form.
+        </label>
+        <p class="hint">The printed form will include the instruction: “Attach a voided check or official bank letter.”</p>
+      </section>
+
+      <section aria-labelledby="sec-auth">
+        <h2 id="sec-auth">3. Authorization</h2>
+        <div class="auth-box" id="auth-statement">
+          I authorize Varsa Group, LLC to deposit my net pay (or the amounts indicated) directly into the account(s) listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.
+        </div>
+        <div class="grid">
+          <label class="field" for="signature">
+            <span class="lbl">Typed signature (full name) <span class="req" aria-hidden="true">*</span></span>
+            <input type="text" id="signature" name="signature" required aria-required="true" aria-invalid="false" aria-describedby="signature-error" autocomplete="off">
+            <span class="error" id="signature-error" data-for="signature" role="status">Type your full name as your signature.</span>
+          </label>
+          <label class="field" for="signDate">
+            <span class="lbl">Date <span class="req" aria-hidden="true">*</span></span>
+            <input type="date" id="signDate" name="signDate" required aria-required="true" aria-invalid="false" aria-describedby="signDate-error">
+            <span class="error" id="signDate-error" data-for="signDate" role="status">Enter the date.</span>
+          </label>
+          <div class="span-2" style="margin-bottom:12px;">
+            <label class="inline">
+              <input type="checkbox" id="confirmAcc" name="confirmAcc" required aria-required="true" aria-invalid="false" aria-describedby="confirmAcc-error">
+              I confirm the information above is accurate.
+            </label>
+            <span class="error" id="confirmAcc-error" data-for="confirmAcc" role="status">You must confirm the information is accurate.</span>
+          </div>
+        </div>
+        <div id="submit-status" class="submit-status no-print" role="status" aria-live="polite" hidden></div>
+        <div class="actions">
+          <button type="button" class="primary" id="btn-submit">Submit to Varsa Group</button>
+          <button type="button" class="secondary" id="btn-print">Generate / Print Authorization Form</button>
+          <button type="button" class="secondary" id="btn-txt">Download as text summary</button>
+        </div>
+      </section>
+    </form>
+
+    <p class="screen-only-note no-print" id="preview-note" hidden>Print preview is shown below. Use your browser’s print dialog (or the button above) to save as PDF.</p>
+    <div id="print-sheet" aria-live="polite" aria-label="Direct deposit authorization document"></div>
+
+    <p class="footnote no-print" id="footer-notice">
+      <strong>CONFIDENTIAL.</strong> Account details are sensitive. Submit this form to Varsa Group management, or hand a printed copy directly to Varun/management; do not email unencrypted.
+    </p>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    function $(id) { return document.getElementById(id); }
+
+    /* ABA routing-number checksum: 3(d1+d4+d7)+7(d2+d5+d8)+1(d3+d6+d9) must be divisible by 10. */
+    function isValidRouting(rtn) {
+      if (!/^\d{9}$/.test(rtn)) return false;
+      var d = rtn.split("").map(Number);
+      var sum = 3 * (d[0] + d[3] + d[6]) + 7 * (d[1] + d[4] + d[7]) + 1 * (d[2] + d[5] + d[8]);
+      return sum % 10 === 0;
+    }
+    window.isValidRouting = isValidRouting;
+
+    function todayISO() {
+      var parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Chicago",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(new Date());
+      var map = {};
+      parts.forEach(function (p) { map[p.type] = p.value; });
+      return map.year + "-" + map.month + "-" + map.day;
+    }
+    function formatDate(iso) {
+      if (!iso) return "";
+      var p = iso.split("-");
+      if (p.length !== 3) return iso;
+      return p[1] + "/" + p[2] + "/" + p[0];
+    }
+    function val(id) {
+      var el = $(id);
+      return el && el.value ? String(el.value).trim() : "";
+    }
+    function radio(name) {
+      var el = document.querySelector('input[name="' + name + '"]:checked');
+      return el ? el.value : "";
+    }
+    function setError(id, show, msg) {
+      var input = $(id);
+      var err = document.getElementById(id + "-error") || document.querySelector('.error[data-for="' + id + '"]');
+      if (input) {
+        input.classList.toggle("invalid", !!show);
+        input.setAttribute("aria-invalid", show ? "true" : "false");
+      }
+      if (err) {
+        if (msg) err.textContent = msg;
+        err.classList.toggle("show", !!show);
+      }
+      return !show;
+    }
+    function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+    function validZip(z) { return /^\d{5}(-\d{4})?$/.test(z); }
+    function phoneDigits(v) { return String(v || "").replace(/\D/g, ""); }
+
+    $("signDate").value = todayISO();
+
+    function syncPartial() {
+      var partial = radio("depType") === "partial" && !acct2Open;
+      $("partial-fields").classList.toggle("open", partial);
+      var kind = radio("partialKind");
+      $("partial-amount-wrap").style.display = kind === "percent" ? "none" : "block";
+      $("partial-percent-wrap").style.display = kind === "percent" ? "block" : "none";
+    }
+    document.querySelectorAll('input[name="depType"], input[name="partialKind"]').forEach(function (el) {
+      el.addEventListener("change", syncPartial);
+    });
+
+    function syncSplit2() {
+      var kind = radio("split2Kind");
+      $("split2-amount-wrap").style.display = kind === "percent" ? "none" : "block";
+      $("split2-percent-wrap").style.display = kind === "percent" ? "block" : "none";
+    }
+    document.querySelectorAll('input[name="split2Kind"]').forEach(function (el) {
+      el.addEventListener("change", syncSplit2);
+    });
+
+    var acct2Open = false;
+    function setAcct2(open) {
+      acct2Open = !!open;
+      $("acct2-wrap").classList.toggle("open", acct2Open);
+      $("acct2-wrap").setAttribute("aria-hidden", acct2Open ? "false" : "true");
+      $("toggle-acct2").style.display = acct2Open ? "none" : "inline-block";
+      $("toggle-acct2").setAttribute("aria-expanded", acct2Open ? "true" : "false");
+      if (acct2Open) {
+        ["bank2", "routing2", "account2", "account2confirm"].forEach(function (id) {
+          $(id).setAttribute("aria-required", "true");
+        });
+        $("bank2").focus();
+      } else {
+        ["bank2", "routing2", "account2", "account2confirm", "split2Amount", "split2Percent"].forEach(function (id) {
+          $(id).removeAttribute("aria-required");
+          setError(id, false);
+        });
+      }
+      syncPartial();
+    }
+    $("toggle-acct2").addEventListener("click", function () { setAcct2(true); });
+    $("remove-acct2").addEventListener("click", function () {
+      ["bank2", "routing2", "account2", "account2confirm", "split2Amount", "split2Percent"].forEach(function (id) {
+        $(id).value = "";
+        setError(id, false);
+      });
+      document.getElementById("type2-checking").checked = true;
+      document.getElementById("split2Kind-amount").checked = true;
+      syncSplit2();
+      setAcct2(false);
+      $("toggle-acct2").focus();
+    });
+
+    function validateRoutingField(id) {
+      var r = val(id).replace(/\D/g, "");
+      if ($(id).value !== r) $(id).value = r;
+      if (!/^\d{9}$/.test(r)) {
+        return setError(id, true, "Enter a valid 9-digit ABA routing number.");
+      }
+      if (!isValidRouting(r)) {
+        return setError(id, true, "This routing number failed the ABA checksum. Please re-check it.");
+      }
+      return setError(id, false);
+    }
+
+    ["routing1", "routing2"].forEach(function (id) {
+      $(id).addEventListener("blur", function () {
+        if (val(id) || id === "routing1" || acct2Open) validateRoutingField(id);
+      });
+      $(id).addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "").slice(0, 9);
+        if (this.value.length === 9) validateRoutingField(id);
+        else if (this.classList.contains("invalid") && this.value.length > 0) {
+          setError(id, true, "Enter a valid 9-digit ABA routing number.");
+        } else if (this.value.length === 0) {
+          setError(id, false);
+        }
+      });
+    });
+
+    function validateAccountPair(id, confirmId, required) {
+      var a = val(id).replace(/\D/g, "");
+      var b = val(confirmId).replace(/\D/g, "");
+      if ($(id).value !== a) $(id).value = a;
+      if ($(confirmId).value !== b) $(confirmId).value = b;
+      var okA = true, okB = true;
+      if (required || a || b) {
+        if (!/^\d{4,17}$/.test(a)) okA = setError(id, true, "Enter the account number (4–17 digits).");
+        else okA = setError(id, false);
+        if (a !== b) okB = setError(confirmId, true, "Account numbers must match.");
+        else if (!b) okB = setError(confirmId, true, "Re-enter the account number to confirm.");
+        else okB = setError(confirmId, false);
+      } else {
+        okA = setError(id, false);
+        okB = setError(confirmId, false);
+      }
+      return okA && okB;
+    }
+    ["account1", "account1confirm", "account2", "account2confirm"].forEach(function (id) {
+      $(id).addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "").slice(0, 17);
+      });
+      $(id).addEventListener("blur", function () {
+        if (id.indexOf("account1") === 0) validateAccountPair("account1", "account1confirm", true);
+        else if (acct2Open) validateAccountPair("account2", "account2confirm", true);
+      });
+    });
+
+    $("ssn4").addEventListener("input", function () {
+      this.value = this.value.replace(/\D/g, "").slice(0, 4);
+    });
+    $("state").addEventListener("input", function () {
+      this.value = this.value.replace(/[^a-zA-Z]/g, "").slice(0, 2).toUpperCase();
+    });
+
+    function hidePrintSheet() {
+      $("print-sheet").classList.remove("preview-on-screen");
+      $("preview-note").hidden = true;
+    }
+
+    function validateAll() {
+      var ok = true;
+      function need(id, test, msg) {
+        var good = test(val(id));
+        if (!setError(id, !good, msg)) ok = false;
+      }
+      need("legalName", function (v) { return v.length >= 2; }, "Enter your full legal name.");
+      need("store", function (v) { return v !== ""; }, "Select your store location.");
+      need("street", function (v) { return v.length >= 3; }, "Enter your street address.");
+      need("city", function (v) { return v.length >= 2; }, "Enter your city.");
+      need("state", function (v) { return /^[A-Z]{2}$/.test(v); }, "Enter a 2-letter state code.");
+      need("zip", validZip, "Enter a valid 5-digit (or ZIP+4) code.");
+      need("phone", function (v) {
+        var d = phoneDigits(v);
+        if (d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+        return d.length === 10;
+      }, "Enter a 10-digit phone number.");
+      need("email", validEmail, "Enter a valid email address.");
+      var ssn = val("ssn4");
+      if (ssn && !/^\d{4}$/.test(ssn)) {
+        if (!setError("ssn4", true, "Enter exactly 4 digits, or leave blank.")) ok = false;
+      } else setError("ssn4", false);
+
+      need("bank1", function (v) { return v.length >= 2; }, "Enter the bank name.");
+      if (!validateRoutingField("routing1")) ok = false;
+      if (!validateAccountPair("account1", "account1confirm", true)) ok = false;
+
+      if (radio("depType") === "partial" && !acct2Open) {
+        if (radio("partialKind") === "percent") {
+          var p = parseInt(val("partialPercent"), 10);
+          if (!(p >= 1 && p <= 99)) {
+            if (!setError("partialPercent", true, "Enter a whole percent from 1 to 99.")) ok = false;
+          } else setError("partialPercent", false);
+        } else {
+          var amt = parseFloat(val("partialAmount"));
+          if (!(amt > 0) || !isFinite(amt)) {
+            if (!setError("partialAmount", true, "Enter a dollar amount greater than 0.")) ok = false;
+          } else setError("partialAmount", false);
+        }
+      }
+
+      if (acct2Open) {
+        need("bank2", function (v) { return v.length >= 2; }, "Enter the bank name.");
+        if (!validateRoutingField("routing2")) ok = false;
+        if (!validateAccountPair("account2", "account2confirm", true)) ok = false;
+        if (radio("split2Kind") === "percent") {
+          var p2 = parseInt(val("split2Percent"), 10);
+          if (!(p2 >= 1 && p2 <= 99)) {
+            if (!setError("split2Percent", true, "Enter a whole percent from 1 to 99.")) ok = false;
+          } else setError("split2Percent", false);
+        } else {
+          var a2 = parseFloat(val("split2Amount"));
+          if (!(a2 > 0) || !isFinite(a2)) {
+            if (!setError("split2Amount", true, "Enter a dollar amount greater than 0.")) ok = false;
+          } else setError("split2Amount", false);
+        }
+      }
+
+      need("signature", function (v) { return v.length >= 2; }, "Type your full name as your signature.");
+      need("signDate", function (v) { return /^\d{4}-\d{2}-\d{2}$/.test(v); }, "Enter the date.");
+      if (!$("confirmAcc").checked) {
+        if (!setError("confirmAcc", true, "You must confirm the information is accurate.")) ok = false;
+      } else setError("confirmAcc", false);
+
+      var banner = $("form-error");
+      if (!ok) {
+        banner.textContent = "Please correct the highlighted fields before continuing.";
+        banner.classList.add("show");
+        hidePrintSheet();
+        var first = document.querySelector("input.invalid, select.invalid");
+        if (first) {
+          first.focus();
+          first.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      } else {
+        banner.classList.remove("show");
+        banner.textContent = "";
+      }
+      return ok;
+    }
+
+    function depositSummary(which) {
+      if (which === 2) {
+        if (radio("split2Kind") === "percent") return val("split2Percent") + "% of net pay (remainder to primary)";
+        return "$" + Number(val("split2Amount")).toFixed(2) + " per pay period (remainder to primary)";
+      }
+      if (acct2Open) return "Remainder of net pay (after second account)";
+      if (radio("depType") === "full") return "Full net pay";
+      if (radio("partialKind") === "percent") return val("partialPercent") + "% of net pay";
+      return "$" + Number(val("partialAmount")).toFixed(2) + " per pay period";
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+      });
+    }
+
+    function row(k, v) {
+      return "<tr><td class='k'>" + escapeHtml(k) + "</td><td>" + escapeHtml(v || "—") + "</td></tr>";
+    }
+
+    function buildPrintHtml() {
+      var addr = val("street") + ", " + val("city") + ", " + val("state") + " " + val("zip");
+      var ssn = val("ssn4") ? "XXX-XX-" + val("ssn4") : "Not provided";
+      var html = "";
+      html += "<h1>Varsa Group, LLC</h1>";
+      html += "<p class='sub'>Employee Direct Deposit Authorization</p>";
+      html += "<div class='rule'></div>";
+      html += "<h2>Employee information</h2>";
+      html += "<table>";
+      html += row("Full legal name", val("legalName"));
+      html += row("Employee ID / position", val("empId") || "—");
+      html += row("Store location", val("store"));
+      html += row("Home address", addr);
+      html += row("Phone", val("phone"));
+      html += row("Personal email", val("email"));
+      html += row("Last 4 of SSN", ssn);
+      html += "</table>";
+
+      html += "<h2>Primary bank account</h2>";
+      html += "<table>";
+      html += row("Bank name", val("bank1"));
+      html += row("Routing number", val("routing1"));
+      html += row("Account number", val("account1"));
+      html += row("Account type", radio("type1"));
+      html += row("Deposit", depositSummary(1));
+      html += "</table>";
+
+      if (acct2Open) {
+        html += "<h2>Second bank account (split)</h2>";
+        html += "<table>";
+        html += row("Bank name", val("bank2"));
+        html += row("Routing number", val("routing2"));
+        html += row("Account number", val("account2"));
+        html += row("Account type", radio("type2"));
+        html += row("Deposit", depositSummary(2));
+        html += "</table>";
+      }
+
+      html += "<h2>Authorization</h2>";
+      html += "<p class='auth-print'>I authorize Varsa Group, LLC to deposit my net pay (or the amounts indicated) directly into the account(s) listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.</p>";
+      html += "<p class='auth-print'>I confirm the information above is accurate.</p>";
+      html += "<div class='sig-row'>";
+      html += "<div class='sig-block'>Employee signature (typed)<div class='sig-line'>" + escapeHtml(val("signature")) + "</div></div>";
+      html += "<div class='date-block'>Date<div class='sig-line' style='font-style:normal;font-size:11pt;'>" + escapeHtml(formatDate(val("signDate"))) + "</div></div>";
+      html += "</div>";
+      html += "<div class='attach'>Attach a voided check or official bank letter." + ($("voidedCheck").checked ? " Employee indicated a voided check or official bank letter will be attached." : "") + "</div>";
+      html += "<p class='fine'>CONFIDENTIAL. Varsa Group, LLC — Managing Member &amp; CEO: Varun Shah. Account details are sensitive — hand this completed form directly to Varun/management; do not email unencrypted.</p>";
+      return html;
+    }
+
+    function showPrintSheet() {
+      $("print-sheet").innerHTML = buildPrintHtml();
+      $("print-sheet").classList.add("preview-on-screen");
+      $("preview-note").hidden = false;
+    }
+
+    function buildTextSummary() {
+      var lines = [];
+      function L(k, v) { lines.push(k + ": " + (v || "")); }
+      lines.push("VARSA GROUP, LLC — Employee Direct Deposit Authorization");
+      lines.push("Generated: " + formatDate(todayISO()));
+      lines.push("CONFIDENTIAL — Hand this to Varun/management; do not email unencrypted.");
+      lines.push("");
+      lines.push("EMPLOYEE INFORMATION");
+      L("Full legal name", val("legalName"));
+      L("Employee ID / position", val("empId") || "(not provided)");
+      L("Store location", val("store"));
+      L("Home address", val("street") + ", " + val("city") + ", " + val("state") + " " + val("zip"));
+      L("Phone", val("phone"));
+      L("Personal email", val("email"));
+      L("Last 4 of SSN", val("ssn4") ? "XXX-XX-" + val("ssn4") : "(not provided)");
+      lines.push("");
+      lines.push("PRIMARY BANK ACCOUNT");
+      L("Bank name", val("bank1"));
+      L("Routing number", val("routing1"));
+      L("Account number", val("account1"));
+      L("Account type", radio("type1"));
+      L("Deposit", depositSummary(1));
+      if (acct2Open) {
+        lines.push("");
+        lines.push("SECOND BANK ACCOUNT (SPLIT)");
+        L("Bank name", val("bank2"));
+        L("Routing number", val("routing2"));
+        L("Account number", val("account2"));
+        L("Account type", radio("type2"));
+        L("Deposit", depositSummary(2));
+      }
+      lines.push("");
+      L("Voided check / bank letter will be attached", $("voidedCheck").checked ? "Yes" : "Not indicated");
+      lines.push("");
+      lines.push("AUTHORIZATION");
+      lines.push("I authorize Varsa Group, LLC to deposit my net pay (or the amounts indicated) directly into the account(s) listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.");
+      L("Typed signature", val("signature"));
+      L("Date", formatDate(val("signDate")));
+      L("Employee confirmed information is accurate", $("confirmAcc").checked ? "Yes" : "No");
+      lines.push("");
+      lines.push("Account details are sensitive — hand this completed form directly to Varun/management; do not email unencrypted.");
+      return lines.join("\r\n");
+    }
+
+    var SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzFfOPuHScOCG_55iP_50Xfq8YhQ69eYE14LGEa-PyvPdDUzBQwxx38Zp-p-KwgTmfOSA/exec";
+
+    function asSheetBanking(v) {
+      var s = (v == null ? "" : String(v)).trim();
+      return s ? ("'" + s) : "";
+    }
+
+    function buildSheetPayload() {
+      var has2 = acct2Open;
+      var depType;
+      var amount;
+      var depType2;
+      if (has2) {
+        depType = "Remainder of net pay (after second account)";
+        amount = "";
+        if (radio("split2Kind") === "percent") depType2 = val("split2Percent") + "% of net pay";
+        else depType2 = "$" + Number(val("split2Amount")).toFixed(2);
+      } else if (radio("depType") === "partial") {
+        depType = "Partial";
+        if (radio("partialKind") === "percent") amount = val("partialPercent") + "%";
+        else amount = "$" + Number(val("partialAmount")).toFixed(2);
+        depType2 = "";
+      } else {
+        depType = "Full net pay";
+        amount = "";
+        depType2 = "";
+      }
+      return {
+        name: val("legalName"),
+        empId: val("empId"),
+        store: val("store"),
+        street: val("street"),
+        city: val("city"),
+        state: val("state"),
+        zip: asSheetBanking(val("zip")),
+        phone: val("phone"),
+        email: val("email"),
+        ssn4: asSheetBanking(val("ssn4")),
+        bank: val("bank1"),
+        routing: asSheetBanking(val("routing1")),
+        account: asSheetBanking(val("account1")),
+        acctType: radio("type1"),
+        depType: depType,
+        amount: amount,
+        bank2: has2 ? val("bank2") : "",
+        routing2: has2 ? asSheetBanking(val("routing2")) : "",
+        account2: has2 ? asSheetBanking(val("account2")) : "",
+        acctType2: has2 ? radio("type2") : "",
+        depType2: has2 ? depType2 : "",
+        signature: val("signature"),
+        dateSigned: val("signDate"),
+        confirmed: $("confirmAcc").checked ? "Yes" : ""
+      };
+    }
+
+    function setSubmitBusy(busy) {
+      var btn = $("btn-submit");
+      if (busy) {
+        btn.disabled = true;
+        btn.textContent = "Sending…";
+      } else {
+        btn.disabled = false;
+        btn.textContent = "Submit to Varsa Group";
+      }
+    }
+
+    function showSubmitSuccess() {
+      var box = $("submit-status");
+      box.hidden = false;
+      box.className = "submit-status no-print success";
+      box.textContent = "✓ Submitted — your details were sent securely to Varsa Group management";
+      $("btn-submit").disabled = true;
+      $("btn-submit").textContent = "Submitted";
+    }
+
+    function showSubmitError() {
+      var box = $("submit-status");
+      box.hidden = false;
+      box.className = "submit-status no-print error";
+      box.textContent = "We couldn't send your details. Please check your connection and try again. ";
+      var retry = document.createElement("button");
+      retry.type = "button";
+      retry.className = "secondary";
+      retry.id = "btn-retry";
+      retry.textContent = "Retry";
+      retry.addEventListener("click", function () { submitToSheet(); });
+      box.appendChild(retry);
+      setSubmitBusy(false);
+    }
+
+    function submitToSheet() {
+      if (!validateAll()) return Promise.resolve(false);
+      setSubmitBusy(true);
+      var box = $("submit-status");
+      box.hidden = true;
+      box.className = "submit-status no-print";
+      box.textContent = "";
+      var payload = buildSheetPayload();
+      return fetch(SHEET_ENDPOINT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      }).then(function () {
+        showSubmitSuccess();
+        showPrintSheet();
+        return true;
+      }).catch(function () {
+        showSubmitError();
+        return false;
+      });
+    }
+
+    $("dd-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      if ($("btn-submit").disabled) return;
+      submitToSheet();
+    });
+
+    $("btn-submit").addEventListener("click", function () {
+      submitToSheet();
+    });
+
+    $("btn-print").addEventListener("click", function () {
+      if (!validateAll()) return;
+      showPrintSheet();
+      window.print();
+    });
+
+    $("btn-txt").addEventListener("click", function () {
+      if (!validateAll()) return;
+      showPrintSheet();
+      var blob = new Blob([buildTextSummary()], { type: "text/plain;charset=utf-8" });
+      var a = document.createElement("a");
+      var safe = (val("legalName") || "employee").replace(/[^\w\- ]+/g, "").replace(/\s+/g, "_");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Varsa_DirectDeposit_" + safe + ".txt";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    });
+
+    /* ?preview=1 auto-fills sample data so a print-to-PDF can be generated for layout review. */
+    function fillPreviewSample() {
+      $("legalName").value = "Jordan Sample";
+      $("empId").value = "Cashier";
+      $("store").value = "Thomasville Chevron";
+      $("street").value = "123 Main Street";
+      $("city").value = "Thomasville";
+      $("state").value = "AL";
+      $("zip").value = "36784";
+      $("phone").value = "(334) 555-0142";
+      $("email").value = "jordan.sample@email.com";
+      $("ssn4").value = "1234";
+      $("bank1").value = "Regions Bank";
+      $("routing1").value = "062000019";
+      $("account1").value = "1234567890";
+      $("account1confirm").value = "1234567890";
+      $("type1-checking").checked = true;
+      $("depType-full").checked = true;
+      $("voidedCheck").checked = true;
+      $("signature").value = "Jordan Sample";
+      $("signDate").value = todayISO();
+      $("confirmAcc").checked = true;
+      syncPartial();
+      showPrintSheet();
+    }
+
+    if (/(?:^|[?&])preview=1(?:&|$)/.test(location.search)) {
+      fillPreviewSample();
+    }
+
+    window.__DD = {
+      isValidRouting: isValidRouting,
+      validateAll: validateAll,
+      todayISO: todayISO,
+      escapeHtml: escapeHtml,
+      buildPrintHtml: buildPrintHtml,
+      buildTextSummary: buildTextSummary,
+      buildSheetPayload: buildSheetPayload,
+      submitToSheet: submitToSheet,
+      SHEET_ENDPOINT: SHEET_ENDPOINT
+    };
+  })();
+  </script>
+</body>
+</html>
