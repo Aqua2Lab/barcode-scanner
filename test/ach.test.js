@@ -166,7 +166,7 @@ assert.ok(!/ssn|ein|social security|tax id/i.test(page));
 assert.ok(!page.includes(ach.ACH_BLOCKED_INVENTORY_URL));
 assert.ok(css.includes('[hidden]{display:none !important}'));
 
-assert.strictEqual(ach.ACH_SHEET_URL, '');
+assert.strictEqual(ach.ACH_SHEET_URL, 'https://script.google.com/macros/s/AKfycbw9VHa_vgloJH-l9NE_PTIorVLjI-26ba1jGlT_FpFGh_80qMpGAwmccs9W--RMLX4H/exec');
 assert.ok(fs.readFileSync('ach.js', 'utf8').includes('ACH_SHEET_URL'));
 assert.ok(!inventory.includes('ACH'));
 assert.ok(!inventory.includes('accountNumber'));

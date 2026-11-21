@@ -4,7 +4,7 @@
 // section "ACH payment setup". Leave this empty until that deployment exists.
 // Do not paste the inventory scanner URL. Bank details must not go to that sheet.
 // =============================================================================
-var ACH_SHEET_URL = '';
+var ACH_SHEET_URL = 'https://script.google.com/macros/s/AKfycbw9VHa_vgloJH-l9NE_PTIorVLjI-26ba1jGlT_FpFGh_80qMpGAwmccs9W--RMLX4H/exec';
 
 var ACH_BLOCKED_INVENTORY_URL = 'https://script.google.com/macros/s/AKfycbzBJ1M9Cu3l9e_PhcxyTLBwOdkX5-cwsnXQ-Z8P-ZX9c_gDtYJ0LoM-pIS6VtvDzL0/exec';
 
