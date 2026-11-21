@@ -144,20 +144,6 @@
       cursor: pointer;
       min-height: 32px;
     }
-    .partial-fields, .acct2-wrap { display: none; }
-    .partial-fields.open, .acct2-wrap.open { display: block; }
-    button.linkish {
-      background: none;
-      border: 1px dashed var(--accent-2);
-      color: var(--accent-2);
-      padding: 10px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: .95rem;
-      margin-bottom: 12px;
-      font-family: inherit;
-    }
-    button.linkish:hover { background: #eef1f6; }
     .auth-box {
       background: #f7f7f7;
       border: 1px solid var(--line);
@@ -381,7 +367,7 @@
       </section>
 
       <section id="acct1-section" aria-labelledby="sec-bank">
-        <h2 id="sec-bank">2. Bank / deposit information (primary account)</h2>
+        <h2 id="sec-bank">2. Bank / deposit information</h2>
         <div class="grid">
           <label class="field span-2" for="bank1">
             <span class="lbl">Bank name <span class="req" aria-hidden="true">*</span></span>
@@ -410,83 +396,6 @@
               <label><input type="radio" id="type1-savings" name="type1" value="Savings"> Savings</label>
             </div>
           </fieldset>
-          <fieldset class="span-2" id="depType-fieldset">
-            <legend>Deposit type <span class="req" aria-hidden="true">*</span></legend>
-            <div class="radios">
-              <label><input type="radio" id="depType-full" name="depType" value="full" checked> Full net pay</label>
-              <label><input type="radio" id="depType-partial" name="depType" value="partial"> Partial</label>
-            </div>
-            <div id="partial-fields" class="partial-fields">
-              <div class="radios">
-                <label><input type="radio" id="partialKind-amount" name="partialKind" value="amount" checked> Fixed dollar amount</label>
-                <label><input type="radio" id="partialKind-percent" name="partialKind" value="percent"> Percentage of net pay</label>
-              </div>
-              <label class="field" id="partial-amount-wrap" for="partialAmount">
-                <span class="lbl">Amount to deposit to this account ($) <span class="req" aria-hidden="true">*</span></span>
-                <input type="number" id="partialAmount" name="partialAmount" min="0.01" step="0.01" aria-invalid="false" aria-describedby="partialAmount-error">
-                <span class="error" id="partialAmount-error" data-for="partialAmount" role="status">Enter a dollar amount greater than 0.</span>
-              </label>
-              <label class="field" id="partial-percent-wrap" for="partialPercent" style="display:none">
-                <span class="lbl">Percent of net pay to deposit to this account <span class="req" aria-hidden="true">*</span></span>
-                <input type="number" id="partialPercent" name="partialPercent" min="1" max="99" step="1" aria-invalid="false" aria-describedby="partialPercent-error">
-                <span class="error" id="partialPercent-error" data-for="partialPercent" role="status">Enter a whole percent from 1 to 99.</span>
-              </label>
-              <p class="hint">If you add a second account below, that account receives the amount you specify there, and the remainder of net pay goes to this primary account.</p>
-            </div>
-          </fieldset>
-        </div>
-
-        <button type="button" class="linkish" id="toggle-acct2" aria-expanded="false" aria-controls="acct2-wrap">+ Add another account (split deposit)</button>
-        <div id="acct2-wrap" class="acct2-wrap" aria-hidden="true">
-          <h2 id="sec-bank2" style="font-size:1rem;margin:4px 0 12px;border-bottom:1px solid var(--line);color:var(--accent);padding-bottom:6px;">Second account (optional split)</h2>
-          <p class="hint">Specify how much goes to this second account. Any remainder of net pay is deposited to the primary account above.</p>
-          <div class="grid">
-            <label class="field span-2" for="bank2">
-              <span class="lbl">Bank name <span class="req" aria-hidden="true">*</span></span>
-              <input type="text" id="bank2" name="bank2" placeholder="e.g. Regions Bank" aria-invalid="false" aria-describedby="bank2-error" autocomplete="off">
-              <span class="error" id="bank2-error" data-for="bank2" role="status">Enter the bank name.</span>
-            </label>
-            <label class="field" for="routing2">
-              <span class="lbl">Bank routing number (9 digits) <span class="req" aria-hidden="true">*</span></span>
-              <input type="text" id="routing2" name="routing2" inputmode="numeric" maxlength="9" aria-invalid="false" aria-describedby="routing2-error" autocomplete="off" spellcheck="false">
-              <span class="error" id="routing2-error" data-for="routing2" role="status">Enter a valid 9-digit ABA routing number.</span>
-            </label>
-            <label class="field" for="account2">
-              <span class="lbl">Account number <span class="req" aria-hidden="true">*</span></span>
-              <input type="text" id="account2" name="account2" inputmode="numeric" maxlength="17" aria-invalid="false" aria-describedby="account2-error" autocomplete="off" spellcheck="false">
-              <span class="error" id="account2-error" data-for="account2" role="status">Enter the account number.</span>
-            </label>
-            <label class="field" for="account2confirm">
-              <span class="lbl">Re-enter account number <span class="req" aria-hidden="true">*</span></span>
-              <input type="text" id="account2confirm" name="account2confirm" inputmode="numeric" maxlength="17" aria-invalid="false" aria-describedby="account2confirm-error" autocomplete="off" spellcheck="false">
-              <span class="error" id="account2confirm-error" data-for="account2confirm" role="status">Account numbers must match.</span>
-            </label>
-            <fieldset class="span-2">
-              <legend>Account type <span class="req" aria-hidden="true">*</span></legend>
-              <div class="radios">
-                <label><input type="radio" id="type2-checking" name="type2" value="Checking" checked> Checking</label>
-                <label><input type="radio" id="type2-savings" name="type2" value="Savings"> Savings</label>
-              </div>
-            </fieldset>
-            <fieldset class="span-2">
-              <legend>Amount for this second account <span class="req" aria-hidden="true">*</span></legend>
-              <div class="radios">
-                <label><input type="radio" id="split2Kind-amount" name="split2Kind" value="amount" checked> Fixed dollar amount</label>
-                <label><input type="radio" id="split2Kind-percent" name="split2Kind" value="percent"> Percentage of net pay</label>
-              </div>
-              <label class="field" id="split2-amount-wrap" for="split2Amount">
-                <span class="lbl">Amount to deposit to this second account ($) <span class="req" aria-hidden="true">*</span></span>
-                <input type="number" id="split2Amount" name="split2Amount" min="0.01" step="0.01" aria-invalid="false" aria-describedby="split2Amount-error">
-                <span class="error" id="split2Amount-error" data-for="split2Amount" role="status">Enter a dollar amount greater than 0.</span>
-              </label>
-              <label class="field" id="split2-percent-wrap" for="split2Percent" style="display:none">
-                <span class="lbl">Percent of net pay to deposit to this second account <span class="req" aria-hidden="true">*</span></span>
-                <input type="number" id="split2Percent" name="split2Percent" min="1" max="99" step="1" aria-invalid="false" aria-describedby="split2Percent-error">
-                <span class="error" id="split2Percent-error" data-for="split2Percent" role="status">Enter a whole percent from 1 to 99.</span>
-              </label>
-            </fieldset>
-          </div>
-          <button type="button" class="linkish" id="remove-acct2">Remove second account</button>
         </div>
 
         <label class="inline" style="margin:8px 0 12px;">
@@ -499,7 +408,7 @@
       <section aria-labelledby="sec-auth">
         <h2 id="sec-auth">3. Authorization</h2>
         <div class="auth-box" id="auth-statement">
-          I authorize Varsa Group, LLC to deposit my net pay (or the amounts indicated) directly into the account(s) listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.
+          I authorize Varsa Group, LLC to deposit my net pay directly into the account listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.
         </div>
         <div class="grid">
           <label class="field" for="signature">
@@ -596,59 +505,6 @@
 
     $("signDate").value = todayISO();
 
-    function syncPartial() {
-      var partial = radio("depType") === "partial" && !acct2Open;
-      $("partial-fields").classList.toggle("open", partial);
-      var kind = radio("partialKind");
-      $("partial-amount-wrap").style.display = kind === "percent" ? "none" : "block";
-      $("partial-percent-wrap").style.display = kind === "percent" ? "block" : "none";
-    }
-    document.querySelectorAll('input[name="depType"], input[name="partialKind"]').forEach(function (el) {
-      el.addEventListener("change", syncPartial);
-    });
-
-    function syncSplit2() {
-      var kind = radio("split2Kind");
-      $("split2-amount-wrap").style.display = kind === "percent" ? "none" : "block";
-      $("split2-percent-wrap").style.display = kind === "percent" ? "block" : "none";
-    }
-    document.querySelectorAll('input[name="split2Kind"]').forEach(function (el) {
-      el.addEventListener("change", syncSplit2);
-    });
-
-    var acct2Open = false;
-    function setAcct2(open) {
-      acct2Open = !!open;
-      $("acct2-wrap").classList.toggle("open", acct2Open);
-      $("acct2-wrap").setAttribute("aria-hidden", acct2Open ? "false" : "true");
-      $("toggle-acct2").style.display = acct2Open ? "none" : "inline-block";
-      $("toggle-acct2").setAttribute("aria-expanded", acct2Open ? "true" : "false");
-      if (acct2Open) {
-        ["bank2", "routing2", "account2", "account2confirm"].forEach(function (id) {
-          $(id).setAttribute("aria-required", "true");
-        });
-        $("bank2").focus();
-      } else {
-        ["bank2", "routing2", "account2", "account2confirm", "split2Amount", "split2Percent"].forEach(function (id) {
-          $(id).removeAttribute("aria-required");
-          setError(id, false);
-        });
-      }
-      syncPartial();
-    }
-    $("toggle-acct2").addEventListener("click", function () { setAcct2(true); });
-    $("remove-acct2").addEventListener("click", function () {
-      ["bank2", "routing2", "account2", "account2confirm", "split2Amount", "split2Percent"].forEach(function (id) {
-        $(id).value = "";
-        setError(id, false);
-      });
-      document.getElementById("type2-checking").checked = true;
-      document.getElementById("split2Kind-amount").checked = true;
-      syncSplit2();
-      setAcct2(false);
-      $("toggle-acct2").focus();
-    });
-
     function validateRoutingField(id) {
       var r = val(id).replace(/\D/g, "");
       if ($(id).value !== r) $(id).value = r;
@@ -661,9 +517,9 @@
       return setError(id, false);
     }
 
-    ["routing1", "routing2"].forEach(function (id) {
+    ["routing1"].forEach(function (id) {
       $(id).addEventListener("blur", function () {
-        if (val(id) || id === "routing1" || acct2Open) validateRoutingField(id);
+        if (val(id) || id === "routing1") validateRoutingField(id);
       });
       $(id).addEventListener("input", function () {
         this.value = this.value.replace(/\D/g, "").slice(0, 9);
@@ -694,13 +550,12 @@
       }
       return okA && okB;
     }
-    ["account1", "account1confirm", "account2", "account2confirm"].forEach(function (id) {
+    ["account1", "account1confirm"].forEach(function (id) {
       $(id).addEventListener("input", function () {
         this.value = this.value.replace(/\D/g, "").slice(0, 17);
       });
       $(id).addEventListener("blur", function () {
-        if (id.indexOf("account1") === 0) validateAccountPair("account1", "account1confirm", true);
-        else if (acct2Open) validateAccountPair("account2", "account2confirm", true);
+        validateAccountPair("account1", "account1confirm", true);
       });
     });
 
@@ -743,37 +598,6 @@
       if (!validateRoutingField("routing1")) ok = false;
       if (!validateAccountPair("account1", "account1confirm", true)) ok = false;
 
-      if (radio("depType") === "partial" && !acct2Open) {
-        if (radio("partialKind") === "percent") {
-          var p = parseInt(val("partialPercent"), 10);
-          if (!(p >= 1 && p <= 99)) {
-            if (!setError("partialPercent", true, "Enter a whole percent from 1 to 99.")) ok = false;
-          } else setError("partialPercent", false);
-        } else {
-          var amt = parseFloat(val("partialAmount"));
-          if (!(amt > 0) || !isFinite(amt)) {
-            if (!setError("partialAmount", true, "Enter a dollar amount greater than 0.")) ok = false;
-          } else setError("partialAmount", false);
-        }
-      }
-
-      if (acct2Open) {
-        need("bank2", function (v) { return v.length >= 2; }, "Enter the bank name.");
-        if (!validateRoutingField("routing2")) ok = false;
-        if (!validateAccountPair("account2", "account2confirm", true)) ok = false;
-        if (radio("split2Kind") === "percent") {
-          var p2 = parseInt(val("split2Percent"), 10);
-          if (!(p2 >= 1 && p2 <= 99)) {
-            if (!setError("split2Percent", true, "Enter a whole percent from 1 to 99.")) ok = false;
-          } else setError("split2Percent", false);
-        } else {
-          var a2 = parseFloat(val("split2Amount"));
-          if (!(a2 > 0) || !isFinite(a2)) {
-            if (!setError("split2Amount", true, "Enter a dollar amount greater than 0.")) ok = false;
-          } else setError("split2Amount", false);
-        }
-      }
-
       need("signature", function (v) { return v.length >= 2; }, "Type your full name as your signature.");
       need("signDate", function (v) { return /^\d{4}-\d{2}-\d{2}$/.test(v); }, "Enter the date.");
       if (!$("confirmAcc").checked) {
@@ -797,15 +621,8 @@
       return ok;
     }
 
-    function depositSummary(which) {
-      if (which === 2) {
-        if (radio("split2Kind") === "percent") return val("split2Percent") + "% of net pay (remainder to primary)";
-        return "$" + Number(val("split2Amount")).toFixed(2) + " per pay period (remainder to primary)";
-      }
-      if (acct2Open) return "Remainder of net pay (after second account)";
-      if (radio("depType") === "full") return "Full net pay";
-      if (radio("partialKind") === "percent") return val("partialPercent") + "% of net pay";
-      return "$" + Number(val("partialAmount")).toFixed(2) + " per pay period";
+    function depositSummary() {
+      return "Full net pay";
     }
 
     function escapeHtml(s) {
@@ -836,28 +653,17 @@
       html += row("Last 4 of SSN", ssn);
       html += "</table>";
 
-      html += "<h2>Primary bank account</h2>";
+      html += "<h2>Bank account</h2>";
       html += "<table>";
       html += row("Bank name", val("bank1"));
       html += row("Routing number", val("routing1"));
       html += row("Account number", val("account1"));
       html += row("Account type", radio("type1"));
-      html += row("Deposit", depositSummary(1));
+      html += row("Deposit", depositSummary());
       html += "</table>";
 
-      if (acct2Open) {
-        html += "<h2>Second bank account (split)</h2>";
-        html += "<table>";
-        html += row("Bank name", val("bank2"));
-        html += row("Routing number", val("routing2"));
-        html += row("Account number", val("account2"));
-        html += row("Account type", radio("type2"));
-        html += row("Deposit", depositSummary(2));
-        html += "</table>";
-      }
-
       html += "<h2>Authorization</h2>";
-      html += "<p class='auth-print'>I authorize Varsa Group, LLC to deposit my net pay (or the amounts indicated) directly into the account(s) listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.</p>";
+      html += "<p class='auth-print'>I authorize Varsa Group, LLC to deposit my net pay directly into the account listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.</p>";
       html += "<p class='auth-print'>I confirm the information above is accurate.</p>";
       html += "<div class='sig-row'>";
       html += "<div class='sig-block'>Employee signature (typed)<div class='sig-line'>" + escapeHtml(val("signature")) + "</div></div>";
@@ -890,26 +696,17 @@
       L("Personal email", val("email"));
       L("Last 4 of SSN", val("ssn4") ? "XXX-XX-" + val("ssn4") : "(not provided)");
       lines.push("");
-      lines.push("PRIMARY BANK ACCOUNT");
+      lines.push("BANK ACCOUNT");
       L("Bank name", val("bank1"));
       L("Routing number", val("routing1"));
       L("Account number", val("account1"));
       L("Account type", radio("type1"));
-      L("Deposit", depositSummary(1));
-      if (acct2Open) {
-        lines.push("");
-        lines.push("SECOND BANK ACCOUNT (SPLIT)");
-        L("Bank name", val("bank2"));
-        L("Routing number", val("routing2"));
-        L("Account number", val("account2"));
-        L("Account type", radio("type2"));
-        L("Deposit", depositSummary(2));
-      }
+      L("Deposit", depositSummary());
       lines.push("");
       L("Voided check / bank letter will be attached", $("voidedCheck").checked ? "Yes" : "Not indicated");
       lines.push("");
       lines.push("AUTHORIZATION");
-      lines.push("I authorize Varsa Group, LLC to deposit my net pay (or the amounts indicated) directly into the account(s) listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.");
+      lines.push("I authorize Varsa Group, LLC to deposit my net pay directly into the account listed above, and if necessary, to adjust/reverse erroneous entries, in accordance with NACHA rules. This authorization remains in effect until I provide written notice to cancel.");
       L("Typed signature", val("signature"));
       L("Date", formatDate(val("signDate")));
       L("Employee confirmed information is accurate", $("confirmAcc").checked ? "Yes" : "No");
@@ -926,25 +723,6 @@
     }
 
     function buildSheetPayload() {
-      var has2 = acct2Open;
-      var depType;
-      var amount;
-      var depType2;
-      if (has2) {
-        depType = "Remainder of net pay (after second account)";
-        amount = "";
-        if (radio("split2Kind") === "percent") depType2 = val("split2Percent") + "% of net pay";
-        else depType2 = "$" + Number(val("split2Amount")).toFixed(2);
-      } else if (radio("depType") === "partial") {
-        depType = "Partial";
-        if (radio("partialKind") === "percent") amount = val("partialPercent") + "%";
-        else amount = "$" + Number(val("partialAmount")).toFixed(2);
-        depType2 = "";
-      } else {
-        depType = "Full net pay";
-        amount = "";
-        depType2 = "";
-      }
       return {
         name: val("legalName"),
         empId: val("empId"),
@@ -960,13 +738,13 @@
         routing: asSheetBanking(val("routing1")),
         account: asSheetBanking(val("account1")),
         acctType: radio("type1"),
-        depType: depType,
-        amount: amount,
-        bank2: has2 ? val("bank2") : "",
-        routing2: has2 ? asSheetBanking(val("routing2")) : "",
-        account2: has2 ? asSheetBanking(val("account2")) : "",
-        acctType2: has2 ? radio("type2") : "",
-        depType2: has2 ? depType2 : "",
+        depType: "Full net pay",
+        amount: "",
+        bank2: "",
+        routing2: "",
+        account2: "",
+        acctType2: "",
+        depType2: "",
         signature: val("signature"),
         dateSigned: val("signDate"),
         confirmed: $("confirmAcc").checked ? "Yes" : ""
@@ -1077,12 +855,10 @@
       $("account1").value = "1234567890";
       $("account1confirm").value = "1234567890";
       $("type1-checking").checked = true;
-      $("depType-full").checked = true;
       $("voidedCheck").checked = true;
       $("signature").value = "Jordan Sample";
       $("signDate").value = todayISO();
       $("confirmAcc").checked = true;
-      syncPartial();
       showPrintSheet();
     }
 
