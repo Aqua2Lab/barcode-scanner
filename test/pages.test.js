@@ -77,6 +77,9 @@ assert.ok(chevron.html.includes('Type UPC instead'));
 assert.ok(chevron.html.includes('Count individual items, not boxes or cartons. Example: a carton of 10 packs = 10.'));
 assert.ok(chevron.html.indexOf('qty-note') < chevron.html.indexOf('id="shelf"'));
 assert.ok(chevron.html.includes('id="p1"'));
+assert.ok(chevron.html.includes('id="cashier"'));
+assert.ok(chevron.html.indexOf('id="p1"') < chevron.html.indexOf('id="cashier"'));
+assert.ok(chevron.html.indexOf('id="cashier"') < chevron.html.indexOf('id="p2"'));
 assert.ok(chevron.html.includes('id="manualUpc"'));
 
 const outrun = render('Outrun', 'Thomasville Outrun');
@@ -91,16 +94,81 @@ assert.strictEqual(
   outrun.html.replace(/Outrun/g, 'STORE').replace(/Thomasville STORE/g, 'NAME')
 );
 
-assert.ok(app.includes("const it={code,name:$('name').value.trim(),shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value,store:STORE_LABEL}"));
+assert.ok(app.includes("const it={code,name:$('name').value.trim(),shelf:$('shelf').value,stock:$('stock').value,comment:$('comment').value,store:STORE_LABEL,cashier:cashierName()}"));
 assert.ok(app.includes("STORE_LABEL = label") || app.includes('STORE_LABEL = label'));
 assert.ok(app.includes('ScannerKit'));
 
 const gs = fs.readFileSync('Code.gs', 'utf8');
-assert.ok(gs.includes("['Timestamp','Barcode','Product','Shelf Qty','Stock Qty','Comment','Store']"));
-assert.ok(gs.includes('sh.getRange(2, 1, 1, 7)'));
+assert.ok(gs.includes("['Timestamp','Barcode','Product','Shelf Qty','Stock Qty','Comment','Store','Cashier']"));
+assert.ok(gs.includes('sh.getRange(2, 1, 1, 8)'));
 assert.ok(gs.includes("d.store || ''"));
+assert.ok(gs.includes("d.cashier || ''"));
 assert.ok(gs.includes("sh.getRange(1, 7).setValue('Store')"));
+assert.ok(gs.includes("sh.getRange(1, 8).setValue('Cashier')"));
 assert.ok(!/insertColumn|moveColumns|deleteColumn/.test(gs));
+
+function memoryStorage(initial) {
+  const data = Object.assign({}, initial);
+  return {
+    getItem(key) { return Object.prototype.hasOwnProperty.call(data, key) ? data[key] : null; },
+    setItem(key, value) { data[key] = String(value); },
+    data
+  };
+}
+
+function loadApp(storage) {
+  const els = {};
+  function el(id) {
+    if (!els[id]) {
+      const node = stub();
+      node.listeners = {};
+      node.addEventListener = function (type, fn) {
+        (node.listeners[type] || (node.listeners[type] = [])).push(fn);
+      };
+      els[id] = node;
+    }
+    return els[id];
+  }
+  const sandbox = {
+    console, setTimeout, clearTimeout,
+    performance: { now() { return 0; } },
+    fetch() { return Promise.resolve(); },
+    navigator: {},
+    localStorage: storage,
+    document: {
+      title: '',
+      body: {
+        getAttribute(attr) {
+          if (attr === 'data-label') return 'Chevron';
+          if (attr === 'data-name') return 'Thomasville Chevron';
+          return null;
+        },
+        insertAdjacentHTML() {}
+      },
+      getElementById(id) { return el(id); },
+      createElement() { return stub(); },
+      querySelector() { return stub(); }
+    }
+  };
+  sandbox.window = sandbox;
+  vm.createContext(sandbox);
+  vm.runInContext(fs.readFileSync('app.js', 'utf8'), sandbox, { filename: 'app.js' });
+  return { sandbox, els };
+}
+
+const cashierStore = memoryStorage({ barcodeScannerCashier: 'Ava' });
+const firstVisit = loadApp(cashierStore);
+assert.strictEqual(firstVisit.els.cashier.value, 'Ava');
+firstVisit.els.cashier.value = '  Sam ';
+firstVisit.els.cashier.listeners.input.forEach(fn => fn());
+assert.strictEqual(cashierStore.data.barcodeScannerCashier, 'Sam');
+const laterVisit = loadApp(cashierStore);
+assert.strictEqual(laterVisit.els.cashier.value, 'Sam');
+laterVisit.els.cashier.value = '   ';
+laterVisit.els.cashier.listeners.change.forEach(fn => fn());
+assert.strictEqual(cashierStore.data.barcodeScannerCashier, '');
+const clearedVisit = loadApp(cashierStore);
+assert.strictEqual(clearedVisit.els.cashier.value, '');
 
 const qtySandbox = { document: { title: '', body: { getAttribute(){ return 'Chevron'; }, insertAdjacentHTML(){} }, getElementById(){ return stub(); }, createElement(){ return stub(); }, querySelector(){ return stub(); } }, console, setTimeout, clearTimeout, performance: { now(){ return 0; } }, fetch(){ return Promise.resolve(); }, navigator: {} };
 qtySandbox.window = qtySandbox;
