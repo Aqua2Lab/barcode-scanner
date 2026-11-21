@@ -7,7 +7,7 @@
 // Do not paste the inventory scanner URL or the ACH payment URL.
 // Social Security numbers and identity documents must not go to those sheets.
 // =============================================================================
-var ONBOARDING_SHEET_URL = '';
+var ONBOARDING_SHEET_URL = 'https://script.google.com/macros/s/AKfycbx4oxCdkt9JXtFZc774KINaak7p4mxOkq3biXuepnT23AmxesXwlUnHnp_8yW_kAy-W/exec';
 
 var ONBOARDING_BLOCKED_INVENTORY_URL = 'https://script.google.com/macros/s/AKfycbzBJ1M9Cu3l9e_PhcxyTLBwOdkX5-cwsnXQ-Z8P-ZX9c_gDtYJ0LoM-pIS6VtvDzL0/exec';
 

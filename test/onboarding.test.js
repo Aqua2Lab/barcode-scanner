@@ -85,7 +85,7 @@ function baseData(extra) {
   }, extra || {});
 }
 
-assert.strictEqual(pageJs.ONBOARDING_SHEET_URL, '');
+assert.strictEqual(pageJs.ONBOARDING_SHEET_URL, 'https://script.google.com/macros/s/AKfycbx4oxCdkt9JXtFZc774KINaak7p4mxOkq3biXuepnT23AmxesXwlUnHnp_8yW_kAy-W/exec');
 assert.strictEqual(pageJs.ONBOARDING_CHILD_CREDIT, 2200);
 assert.strictEqual(pageJs.ONBOARDING_OTHER_DEPENDENT_CREDIT, 500);
 assert.strictEqual(pageJs.onboardingValidSsn('401-23-4567'), true);
