@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Varsa Group — Office Supply Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1F2A44;
+      --navy-2: #2A3A5C;
+      --ink: #1C1F26;
+      --muted: #5C6570;
+      --bg: #F3F4F7;
+      --card: #FFFFFF;
+      --line: #E3E6EC;
+      --amber: #F3D48A;
+      --amber-bg: #FFF6E0;
+      --amber-ink: #5C4300;
+      --ok-bg: #EEF1F5;
+      --shadow: 0 8px 24px rgba(31, 42, 68, 0.08);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Open Sans", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.45;
+      min-height: 100vh;
+    }
+    h1, h2, h3, .brand, .nav-btn, .store-btn, .btn {
+      font-family: Montserrat, "Open Sans", sans-serif;
+    }
+    .app-header {
+      background: var(--navy);
+      color: #fff;
+      padding: 20px 20px 18px;
+    }
+    .app-header-inner { max-width: 920px; margin: 0 auto; }
+    .eyebrow {
+      margin: 0 0 4px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      font-weight: 600;
+    }
+    .app-header h1 {
+      margin: 0;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .sub { margin: 6px 0 0; font-size: 0.92rem; opacity: 0.9; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 16px 16px 120px; }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .store-switch, .view-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .view-switch { grid-template-columns: repeat(3, 1fr); margin-top: 12px; }
+    .store-btn, .nav-btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--navy);
+      border-radius: 999px;
+      min-height: 46px;
+      padding: 8px 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .store-btn[aria-pressed="true"], .nav-btn[aria-pressed="true"] {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    label.field { display: block; }
+    label.field span {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid #C9CED6;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 16px;
+      background: #fff;
+      color: var(--ink);
+    }
+    input:focus, select:focus, button:focus-visible {
+      outline: 3px solid #8EA0C4;
+      outline-offset: 2px;
+    }
+    .date-read {
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: 10px;
+      background: var(--ok-bg);
+      border: 1px solid var(--line);
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin: 4px 2px 10px;
+    }
+    .status-bar strong { color: var(--navy); }
+    .badge-reorder {
+      display: inline-block;
+      background: var(--amber);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .category { margin-bottom: 14px; }
+    .category h2 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: var(--navy);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+    }
+    .item {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+      align-items: center;
+    }
+    .item.reorder {
+      background: var(--amber-bg);
+      border-color: var(--amber);
+    }
+    .item-name {
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--navy);
+      background: none;
+      border: 0;
+      padding: 0;
+      text-align: left;
+      font: inherit;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .item-name:hover { text-decoration: underline; }
+    .item-meta { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+    .controls { display: flex; align-items: center; gap: 8px; }
+    .step {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--navy);
+      background: #fff;
+      color: var(--navy);
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .qty {
+      width: 72px;
+      text-align: center;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .min-wrap {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .min-wrap input { width: 84px; min-height: 38px; text-align: center; }
+    .footer-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.96);
+      border-top: 1px solid var(--line);
+      padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+    }
+    .footer-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      min-height: 48px;
+      padding: 0 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn.primary { background: var(--navy); color: #fff; flex: 1; }
+    .btn.secondary { background: #fff; color: var(--navy); border: 1px solid var(--navy); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .banner {
+      display: none;
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--ok-bg);
+      border: 1px solid var(--line);
+      color: var(--navy);
+      font-size: 0.92rem;
+    }
+    .banner.show { display: block; }
+    .banner.warn { background: var(--amber-bg); border-color: var(--amber); }
+    .current-row, .reorder-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+    .current-row.reorder, .reorder-row { background: transparent; }
+    .muted { color: var(--muted); }
+    .drawer-backdrop, .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(31, 42, 68, 0.45);
+      z-index: 20;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .drawer-backdrop.show, .modal-backdrop.show { display: flex; }
+    .drawer, .modal {
+      background: #fff;
+      width: min(560px, 100%);
+      max-height: 86vh;
+      overflow: auto;
+      border-radius: 20px 20px 0 0;
+      padding: 18px 16px 24px;
+    }
+    .modal { border-radius: 20px; margin: 16px; max-height: 90vh; }
+    .spark {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 80px;
+      margin: 12px 0;
+    }
+    .spark span {
+      flex: 1;
+      background: var(--navy);
+      border-radius: 6px 6px 2px 2px;
+      min-height: 4px;
+    }
+    .spark span.low { background: var(--amber); }
+    .history-list { list-style: none; padding: 0; margin: 0; }
+    .history-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.9rem;
+    }
+    .print-only { display: none; }
+    @media (max-width: 640px) {
+      .meta { grid-template-columns: 1fr; }
+      .app-header h1 { font-size: 1.25rem; }
+    }
+    @media print {
+      body { background: #fff; }
+      .app-header, .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      .wrap { padding: 0; }
+      .panel { box-shadow: none; border: 0; }
+      h1 { font-family: Montserrat, sans-serif; color: #1F2A44; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { border-bottom: 1px solid #D6D9DF; text-align: left; padding: 8px 6px; }
+      th { color: #1F2A44; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header no-print">
+    <div class="app-header-inner">
+      <p class="eyebrow">Varsa Group</p>
+      <h1>Office Supply Tracker</h1>
+      <p class="sub">Count what is on hand at each store, then save a snapshot to the shared sheet.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="banner" class="banner no-print" role="status"></div>
+
+    <section class="panel no-print" aria-label="Store and counter">
+      <div class="store-switch" role="group" aria-label="Store">
+        <button type="button" class="store-btn" id="btn-chevron" data-store="Thomasville Chevron" aria-pressed="true">Thomasville Chevron</button>
+        <button type="button" class="store-btn" id="btn-outrun" data-store="Thomasville OutRun" aria-pressed="false">Thomasville OutRun</button>
+      </div>
+      <div class="meta">
+        <label class="field">
+          <span>Counted by</span>
+          <input id="counter" type="text" maxlength="80" autocomplete="name" placeholder="Your name">
+        </label>
+        <div class="field">
+          <span>Date</span>
+          <div id="count-date" class="date-read"></div>
+        </div>
+      </div>
+      <div class="view-switch" role="tablist" aria-label="Views">
+        <button type="button" class="nav-btn" data-view="count" aria-pressed="true">Count</button>
+        <button type="button" class="nav-btn" data-view="current" aria-pressed="false">Current</button>
+        <button type="button" class="nav-btn" data-view="reorder" aria-pressed="false">Reorder list</button>
+      </div>
+    </section>
+
+    <div class="status-bar no-print">
+      <span id="progress-label">0 of 52 counted</span>
+      <span id="reorder-label"><span class="badge-reorder" id="reorder-count">0 reorder</span></span>
+    </div>
+
+    <section id="view-count" class="view"></section>
+    <section id="view-current" class="view panel" hidden></section>
+    <section id="view-reorder" class="view panel" hidden></section>
+  </main>
+
+  <div class="footer-bar no-print">
+    <div class="footer-inner">
+      <button type="button" class="btn secondary" id="btn-add">Add item</button>
+      <button type="button" class="btn primary" id="btn-submit">Save count</button>
+    </div>
+  </div>
+
+  <div id="drawer-back" class="drawer-backdrop no-print" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <div class="drawer">
+      <h2 id="drawer-title">Item history</h2>
+      <div id="drawer-body"></div>
+      <button type="button" class="btn secondary" id="btn-close-drawer" style="margin-top:12px;width:100%">Close</button>
+    </div>
+  </div>
+
+  <div id="modal-back" class="modal-backdrop no-print" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <h2 id="modal-title">Add a custom item</h2>
+      <label class="field"><span>Category</span>
+        <input id="new-category" list="category-list" type="text" maxlength="80">
+        <datalist id="category-list"></datalist>
+      </label>
+      <label class="field" style="margin-top:10px"><span>Item name</span>
+        <input id="new-item" type="text" maxlength="120">
+      </label>
+      <label class="field" style="margin-top:10px"><span>Unit</span>
+        <input id="new-unit" type="text" maxlength="40" placeholder="each, boxes, rolls…">
+      </label>
+      <div class="meta">
+        <label class="field"><span>Min — Chevron</span><input id="new-min-chevron" type="number" min="0" step="1" value="1"></label>
+        <label class="field"><span>Min — OutRun</span><input id="new-min-outrun" type="number" min="0" step="1" value="1"></label>
+      </div>
+      <div class="footer-inner" style="margin-top:14px">
+        <button type="button" class="btn secondary" id="btn-cancel-item">Cancel</button>
+        <button type="button" class="btn primary" id="btn-save-item">Save item</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="print-only" id="print-root">
+    <h1>Varsa Group — Office Supply Reorder List</h1>
+    <p id="print-meta"></p>
+    <table>
+      <thead>
+        <tr><th>Category</th><th>Item</th><th>Unit</th><th>On hand</th><th>Min</th><th>Need</th></tr>
+      </thead>
+      <tbody id="print-body"></tbody>
+    </table>
+    <p>For Sam’s Club or the usual office supplier.</p>
+  </section>
+
+  <script>
+  (function () {
+    var SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbym6bp2M7zIdPD6PxV3SUmRHlUaq5dMGNqwFCGXjToFQnBBQLvPBM23rjl2AqM3K7L8/exec";
+    var DEFAULT_CATALOG = [
+  {
+    "category": "Register & cash handling",
+    "item": "Thermal receipt paper rolls",
+    "unit": "rolls",
+    "minChevron": 4,
+    "minOutRun": 4,
+    "custom": false
+  },
+  {
+    "category": "Register & cash handling",
+    "item": "Cash count sheets",
+    "unit": "pads",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Register & cash handling",
+    "item": "Clipboard",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Register & cash handling",
+    "item": "Deposit bags (tamper-evident)",
+    "unit": "each",
+    "minChevron": 10,
+    "minOutRun": 10,
+    "custom": false
+  },
+  {
+    "category": "Register & cash handling",
+    "item": "Coin wrappers",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Register & cash handling",
+    "item": "Counterfeit detector pens",
+    "unit": "each",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Register & cash handling",
+    "item": "Rubber bands",
+    "unit": "boxes",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Register & cash handling",
+    "item": "Paper clips",
+    "unit": "boxes",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Register & cash handling",
+    "item": "Printing calculator",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "Copy paper (letter)",
+    "unit": "reams",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "Printer ink/toner",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "Manila folders",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "Hanging file folders",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "3-ring binders",
+    "unit": "each",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "Sheet protectors",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "Index tabs",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "Sticky notes",
+    "unit": "pads",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Paper & printing",
+    "item": "Notepads",
+    "unit": "each",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Writing & marking",
+    "item": "Black pens",
+    "unit": "boxes",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Writing & marking",
+    "item": "Blue pens",
+    "unit": "boxes",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Writing & marking",
+    "item": "Sharpies fine",
+    "unit": "each",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Writing & marking",
+    "item": "Sharpies broad",
+    "unit": "each",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Writing & marking",
+    "item": "Highlighters",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Writing & marking",
+    "item": "Dry-erase markers",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Writing & marking",
+    "item": "Dry-erase eraser",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Price gun labels/shelf tags",
+    "unit": "rolls",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Price gun",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Clear tape",
+    "unit": "rolls",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Packing tape",
+    "unit": "rolls",
+    "minChevron": 2,
+    "minOutRun": 2,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Tape dispenser",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Sign holders",
+    "unit": "each",
+    "minChevron": 4,
+    "minOutRun": 4,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Scissors",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Box cutter",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Pricing & signage",
+    "item": "Box cutter blades",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Desk basics",
+    "item": "Stapler",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Desk basics",
+    "item": "Staples",
+    "unit": "boxes",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Desk basics",
+    "item": "Staple remover",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Desk basics",
+    "item": "Hole punch",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Desk basics",
+    "item": "Envelopes letter",
+    "unit": "boxes",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Desk basics",
+    "item": "Envelopes 9x12",
+    "unit": "boxes",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Desk basics",
+    "item": "Stamps",
+    "unit": "each",
+    "minChevron": 10,
+    "minOutRun": 10,
+    "custom": false
+  },
+  {
+    "category": "Desk basics",
+    "item": "Lockable cash/key box",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Logs & records",
+    "item": "Shift log book",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Logs & records",
+    "item": "Lottery log/settlement forms",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Logs & records",
+    "item": "Delivery/invoice log",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Logs & records",
+    "item": "Incident/damage report forms",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Back office",
+    "item": "AA batteries",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Back office",
+    "item": "AAA batteries",
+    "unit": "packs",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Back office",
+    "item": "Extension cord/surge protector",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Back office",
+    "item": "Label maker",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Back office",
+    "item": "Label maker tape",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  },
+  {
+    "category": "Back office",
+    "item": "Shredder",
+    "unit": "each",
+    "minChevron": 1,
+    "minOutRun": 1,
+    "custom": false
+  }
+];
+    var STORES = ["Thomasville Chevron", "Thomasville OutRun"];
+    var state = {
+      store: "Thomasville Chevron",
+      view: "count",
+      items: [],
+      current: [],
+      drafts: {},
+      connected: false
+    };
+
+    function $(id) { return document.getElementById(id); }
+    function minKey(store) { return store === "Thomasville OutRun" ? "minOutRun" : "minChevron"; }
+    function storeShort(store) { return store === "Thomasville OutRun" ? "OutRun" : "Chevron"; }
+
+    function todayLabel() {
+      try {
+        return new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Chicago",
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        }).format(new Date()) + " (America/Chicago)";
+      } catch (err) {
+        return new Date().toDateString();
+      }
+    }
+
+    function loadDrafts() {
+      try {
+        state.drafts = JSON.parse(localStorage.getItem("varsa-supply-drafts") || "{}") || {};
+      } catch (err) { state.drafts = {}; }
+    }
+    function saveDrafts() {
+      localStorage.setItem("varsa-supply-drafts", JSON.stringify(state.drafts));
+    }
+    function draftFor(store) {
+      if (!state.drafts[store]) state.drafts[store] = { counter: "", values: {} };
+      return state.drafts[store];
+    }
+    function itemState(itemName) {
+      var d = draftFor(state.store);
+      if (!d.values[itemName]) d.values[itemName] = {};
+      return d.values[itemName];
+    }
+
+    function showBanner(text, warn) {
+      var box = $("banner");
+      box.textContent = text;
+      box.className = "banner no-print show" + (warn ? " warn" : "");
+    }
+    function hideBanner() {
+      $("banner").className = "banner no-print";
+    }
+
+    function mergeCurrentIntoItems() {
+      var byItem = {};
+      state.items.forEach(function (it) { byItem[it.item] = it; });
+      state.current.forEach(function (row) {
+        if (row.store !== state.store) return;
+        var it = byItem[row.item];
+        if (!it) return;
+        if (row.min != null && row.min !== "") it[minKey(state.store)] = row.min;
+      });
+    }
+
+    function countedStats() {
+      var counted = 0, reorder = 0;
+      state.items.forEach(function (it) {
+        var st = itemState(it.item);
+        var min = st.min != null ? Number(st.min) : Number(it[minKey(state.store)]);
+        if (st.qty === "" || st.qty == null) return;
+        counted += 1;
+        if (Number(st.qty) <= min) reorder += 1;
+      });
+      return { counted: counted, total: state.items.length, reorder: reorder };
+    }
+
+    function currentForStore() {
+      return state.current.filter(function (row) { return row.store === state.store; });
+    }
+
+    function reorderRowsFromCurrent() {
+      var rows = currentForStore().filter(function (row) {
+        return row.status === "Reorder" || (row.qty != null && row.qty !== "" && Number(row.qty) <= Number(row.min));
+      });
+      if (rows.length) return rows;
+      return state.items.map(function (it) {
+        var st = itemState(it.item);
+        if (st.qty === "" || st.qty == null) return null;
+        var min = st.min != null ? Number(st.min) : Number(it[minKey(state.store)]);
+        if (Number(st.qty) > min) return null;
+        return {
+          category: it.category,
+          item: it.item,
+          unit: it.unit,
+          qty: Number(st.qty),
+          min: min
+        };
+      }).filter(Boolean);
+    }
+
+    function renderCount() {
+      var root = $("view-count");
+      root.innerHTML = "";
+      var cats = [];
+      state.items.forEach(function (it) {
+        if (cats.indexOf(it.category) === -1) cats.push(it.category);
+      });
+      cats.forEach(function (cat) {
+        var items = state.items.filter(function (it) { return it.category === cat; });
+        var section = document.createElement("section");
+        section.className = "category";
+        var h = document.createElement("h2");
+        h.textContent = cat;
+        var count = document.createElement("span");
+        count.className = "muted";
+        count.style.fontFamily = "Open Sans, sans-serif";
+        count.style.fontWeight = "400";
+        count.textContent = items.length + " items";
+        h.appendChild(count);
+        section.appendChild(h);
+        items.forEach(function (it) {
+          section.appendChild(renderItem(it));
+        });
+        root.appendChild(section);
+      });
+      updateStats();
+    }
+
+    function renderItem(it) {
+      var st = itemState(it.item);
+      if (st.min == null) st.min = it[minKey(state.store)];
+      var qtyEmpty = st.qty === "" || st.qty == null;
+      var qty = qtyEmpty ? "" : Number(st.qty);
+      var min = Number(st.min);
+      var isReorder = !qtyEmpty && qty <= min;
+      var row = document.createElement("div");
+      row.className = "item" + (isReorder ? " reorder" : "");
+      row.dataset.item = it.item;
+      var left = document.createElement("div");
+      var nameBtn = document.createElement("button");
+      nameBtn.type = "button";
+      nameBtn.className = "item-name";
+      nameBtn.textContent = it.item;
+      nameBtn.addEventListener("click", function () { openHistory(it); });
+      var meta = document.createElement("div");
+      meta.className = "item-meta";
+      meta.innerHTML = escapeHtml(it.unit) + (isReorder ? ' <span class="badge-reorder">Reorder</span>' : "");
+      left.appendChild(nameBtn);
+      left.appendChild(meta);
+      var controls = document.createElement("div");
+      controls.className = "controls";
+      var minus = document.createElement("button");
+      minus.type = "button";
+      minus.className = "step";
+      minus.setAttribute("aria-label", "Decrease " + it.item);
+      minus.textContent = "−";
+      var input = document.createElement("input");
+      input.type = "number";
+      input.className = "qty";
+      input.min = "0";
+      input.step = "1";
+      input.inputMode = "numeric";
+      input.value = qtyEmpty ? "" : String(qty);
+      input.setAttribute("aria-label", it.item + " quantity");
+      var plus = document.createElement("button");
+      plus.type = "button";
+      plus.className = "step";
+      plus.setAttribute("aria-label", "Increase " + it.item);
+      plus.textContent = "+";
+      minus.addEventListener("click", function () { bump(it.item, -1); });
+      plus.addEventListener("click", function () { bump(it.item, 1); });
+      input.addEventListener("input", function () { setQty(it.item, input.value); });
+      controls.appendChild(minus);
+      controls.appendChild(input);
+      controls.appendChild(plus);
+      var minWrap = document.createElement("div");
+      minWrap.className = "min-wrap";
+      var minLabel = document.createElement("span");
+      minLabel.textContent = "Reorder when at or below";
+      var minInput = document.createElement("input");
+      minInput.type = "number";
+      minInput.min = "0";
+      minInput.step = "1";
+      minInput.value = String(min);
+      minInput.setAttribute("aria-label", it.item + " minimum");
+      minInput.addEventListener("input", function () { setMin(it.item, minInput.value); });
+      minWrap.appendChild(minLabel);
+      minWrap.appendChild(minInput);
+      row.appendChild(left);
+      row.appendChild(controls);
+      row.appendChild(minWrap);
+      return row;
+    }
+
+    function bump(itemName, delta) {
+      var st = itemState(itemName);
+      var current = (st.qty === "" || st.qty == null) ? 0 : Number(st.qty);
+      if (!isFinite(current)) current = 0;
+      setQty(itemName, Math.max(0, current + delta));
+      renderCount();
+    }
+
+    function setQty(itemName, value) {
+      var st = itemState(itemName);
+      if (value === "") { st.qty = ""; }
+      else {
+        var n = Number(value);
+        if (!isFinite(n) || n < 0) n = 0;
+        st.qty = Math.floor(n);
+      }
+      saveDrafts();
+      updateStats();
+      var row = document.querySelector('.item[data-item="' + cssEscape(itemName) + '"]');
+      if (row) {
+        var stNow = itemState(itemName);
+        var min = Number(stNow.min);
+        var qtyEmpty = stNow.qty === "" || stNow.qty == null;
+        var isReorder = !qtyEmpty && Number(stNow.qty) <= min;
+        row.classList.toggle("reorder", isReorder);
+        var meta = row.querySelector(".item-meta");
+        var it = state.items.filter(function (x) { return x.item === itemName; })[0];
+        if (meta && it) meta.innerHTML = escapeHtml(it.unit) + (isReorder ? ' <span class="badge-reorder">Reorder</span>' : "");
+        var input = row.querySelector(".qty");
+        if (input && document.activeElement !== input) input.value = qtyEmpty ? "" : String(stNow.qty);
+      }
+    }
+
+    function setMin(itemName, value) {
+      var n = Number(value);
+      if (!isFinite(n) || n < 0) n = 0;
+      itemState(itemName).min = Math.floor(n);
+      saveDrafts();
+      setQty(itemName, itemState(itemName).qty);
+    }
+
+    function updateStats() {
+      var s = countedStats();
+      $("progress-label").textContent = s.counted + " of " + s.total + " counted";
+      $("reorder-count").textContent = s.reorder + " reorder";
+    }
+
+    function renderCurrent() {
+      var root = $("view-current");
+      var rows = currentForStore();
+      if (!rows.length) {
+        root.innerHTML = "<h2>Current stock — " + escapeHtml(state.store) + "</h2><p class='muted'>No saved counts yet. Enter quantities on the Count tab and tap Save count.</p>";
+        return;
+      }
+      var html = "<h2>Current stock — " + escapeHtml(state.store) + "</h2>";
+      var reorder = rows.filter(function (r) { return r.status === "Reorder"; }).length;
+      html += "<p class='muted'>" + rows.length + " items · " + reorder + " need reorder</p>";
+      rows.forEach(function (r) {
+        var qty = r.qty == null || r.qty === "" ? "—" : r.qty;
+        html += '<div class="current-row' + (r.status === "Reorder" ? " reorder" : "") + '">';
+        html += "<div><strong>" + escapeHtml(r.item) + "</strong><div class='item-meta'>" + escapeHtml(r.category) + " · " + escapeHtml(r.unit);
+        if (r.status === "Reorder") html += ' <span class="badge-reorder">Reorder</span>';
+        html += "</div></div>";
+        html += "<div><strong>" + escapeHtml(String(qty)) + "</strong> <span class='muted'>/ " + escapeHtml(String(r.min)) + "</span></div>";
+        html += "<div class='muted'>" + escapeHtml(r.lastCounted || "Not counted") + "</div>";
+        html += "</div>";
+      });
+      root.innerHTML = html;
+    }
+
+    function renderReorder() {
+      var root = $("view-reorder");
+      var rows = reorderRowsFromCurrent();
+      var html = "<h2>Reorder list — " + escapeHtml(state.store) + "</h2>";
+      html += "<p class='muted no-print'>Shopping list for Sam’s Club or your usual supplier. Print or download it before you go.</p>";
+      if (!rows.length) {
+        html += "<p>Nothing is at or below its minimum right now.</p>";
+        root.innerHTML = html;
+        fillPrint([]);
+        return;
+      }
+      rows.forEach(function (r) {
+        var need = Math.max(0, Number(r.min) - Number(r.qty));
+        html += '<div class="reorder-row">';
+        html += "<div><strong>" + escapeHtml(r.item) + "</strong><div class='item-meta'>" + escapeHtml(r.category) + " · " + escapeHtml(r.unit) + "</div></div>";
+        html += "<div>On hand <strong>" + escapeHtml(String(r.qty)) + "</strong></div>";
+        html += "<div>Need <strong>" + need + "</strong></div>";
+        html += "</div>";
+      });
+      html += '<div class="footer-inner no-print" style="margin-top:16px;padding:0">';
+      html += '<button type="button" class="btn secondary" id="btn-csv">Download CSV</button>';
+      html += '<button type="button" class="btn primary" id="btn-print">Print list</button>';
+      html += "</div>";
+      root.innerHTML = html;
+      $("btn-csv").addEventListener("click", downloadCsv);
+      $("btn-print").addEventListener("click", printList);
+      fillPrint(rows);
+    }
+
+    function fillPrint(rows) {
+      $("print-meta").textContent = state.store + " · " + todayLabel() + " · " + ($("counter").value || "");
+      var body = $("print-body");
+      body.innerHTML = "";
+      rows.forEach(function (r) {
+        var need = Math.max(0, Number(r.min) - Number(r.qty));
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + escapeHtml(r.category) + "</td><td>" + escapeHtml(r.item) + "</td><td>" + escapeHtml(r.unit) + "</td><td>" + escapeHtml(String(r.qty)) + "</td><td>" + escapeHtml(String(r.min)) + "</td><td>" + need + "</td>";
+        body.appendChild(tr);
+      });
+    }
+
+    function downloadCsv() {
+      var rows = reorderRowsFromCurrent();
+      var lines = [["Store", "Date", "Counter", "Category", "Item", "Unit", "On hand", "Min", "Need"].join(",")];
+      rows.forEach(function (r) {
+        var need = Math.max(0, Number(r.min) - Number(r.qty));
+        lines.push([state.store, todayLabel(), $("counter").value || "", r.category, r.item, r.unit, r.qty, r.min, need].map(csvCell).join(","));
+      });
+      var blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Varsa_Supply_Reorder_" + storeShort(state.store) + ".csv";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    }
+
+    function printList() {
+      fillPrint(reorderRowsFromCurrent());
+      window.print();
+    }
+
+    function csvCell(value) {
+      var s = String(value == null ? "" : value);
+      if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    }
+
+    function setView(view) {
+      state.view = view;
+      document.querySelectorAll(".nav-btn").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", btn.getAttribute("data-view") === view ? "true" : "false");
+      });
+      $("view-count").hidden = view !== "count";
+      $("view-current").hidden = view !== "current";
+      $("view-reorder").hidden = view !== "reorder";
+      $("btn-submit").style.display = view === "count" ? "" : "none";
+      if (view === "current") renderCurrent();
+      if (view === "reorder") renderReorder();
+    }
+
+    function setStore(store) {
+      state.store = store;
+      document.querySelectorAll(".store-btn").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", btn.getAttribute("data-store") === store ? "true" : "false");
+      });
+      $("counter").value = draftFor(store).counter || "";
+      mergeCurrentIntoItems();
+      renderCount();
+      if (state.view === "current") renderCurrent();
+      if (state.view === "reorder") renderReorder();
+    }
+
+    function openHistory(it) {
+      $("drawer-title").textContent = it.item;
+      $("drawer-body").innerHTML = "<p class='muted'>Loading history…</p>";
+      $("drawer-back").classList.add("show");
+      loadHistory(it);
+    }
+
+    function closeDrawer() { $("drawer-back").classList.remove("show"); }
+    function openModal() {
+      var list = $("category-list");
+      var cats = [];
+      state.items.forEach(function (it) { if (cats.indexOf(it.category) === -1) cats.push(it.category); });
+      list.innerHTML = cats.map(function (c) { return "<option value='" + escapeHtml(c) + "'>"; }).join("");
+      $("modal-back").classList.add("show");
+      $("new-item").focus();
+    }
+    function closeModal() { $("modal-back").classList.remove("show"); }
+
+    function addLocalItem(item) {
+      var exists = state.items.some(function (it) { return it.item.toLowerCase() === item.item.toLowerCase(); });
+      if (exists) { showBanner("That item is already on the list.", true); return false; }
+      state.items.push({
+        category: item.category,
+        item: item.item,
+        unit: item.unit || "each",
+        minChevron: Number(item.minChevron),
+        minOutRun: Number(item.minOutRun),
+        custom: true
+      });
+      renderCount();
+      return true;
+    }
+
+    function submitCount() {
+      hideBanner();
+      var counter = $("counter").value.trim();
+      draftFor(state.store).counter = counter;
+      saveDrafts();
+      if (!counter) { showBanner("Please enter who is doing this count.", true); $("counter").focus(); return; }
+      var payloadItems = [];
+      state.items.forEach(function (it) {
+        var st = itemState(it.item);
+        if (st.qty === "" || st.qty == null) return;
+        var min = st.min != null ? Number(st.min) : Number(it[minKey(state.store)]);
+        payloadItems.push({
+          category: it.category,
+          item: it.item,
+          unit: it.unit,
+          qty: Number(st.qty),
+          min: min
+        });
+      });
+      if (!payloadItems.length) { showBanner("Enter a quantity for at least one item before saving.", true); return; }
+      if (!SHEET_ENDPOINT) {
+        showBanner("The count is ready, but the Google Sheet is not connected yet. The app still keeps a draft on this device.", true);
+        return;
+      }
+      var btn = $("btn-submit");
+      btn.disabled = true;
+      btn.textContent = "Saving…";
+      var body = JSON.stringify({
+        kind: "supplies",
+        action: "count",
+        store: state.store,
+        counter: counter,
+        items: payloadItems
+      });
+      fetch(SHEET_ENDPOINT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: body
+      }).then(function () {
+        showBanner("Saved " + payloadItems.length + " items for " + state.store + ". The Current tab will refresh in a moment.");
+        setTimeout(function () {
+          bootstrap(true).then(function () {
+            btn.disabled = false;
+            btn.textContent = "Save count";
+          });
+        }, 2000);
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = "Save count";
+        showBanner("We couldn't save this count. Check the connection and try again.", true);
+      });
+    }
+
+    function saveCustomItem() {
+      var item = {
+        category: $("new-category").value.trim(),
+        item: $("new-item").value.trim(),
+        unit: $("new-unit").value.trim() || "each",
+        minChevron: $("new-min-chevron").value,
+        minOutRun: $("new-min-outrun").value
+      };
+      if (!item.category || !item.item) { showBanner("Please enter a category and item name.", true); return; }
+      if (!/^\d+$/.test(String(item.minChevron)) || !/^\d+$/.test(String(item.minOutRun))) {
+        showBanner("Minimums must be whole numbers.", true); return;
+      }
+      if (!addLocalItem(item)) return;
+      closeModal();
+      $("new-category").value = "";
+      $("new-item").value = "";
+      $("new-unit").value = "";
+      $("new-min-chevron").value = "1";
+      $("new-min-outrun").value = "1";
+      if (!SHEET_ENDPOINT) {
+        showBanner("Item added on this device. It will also be saved to the sheet once the tracker is connected.");
+        return;
+      }
+      fetch(SHEET_ENDPOINT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          kind: "supplies",
+          action: "addItem",
+          category: item.category,
+          item: item.item,
+          unit: item.unit,
+          minChevron: Number(item.minChevron),
+          minOutRun: Number(item.minOutRun)
+        })
+      }).then(function () {
+        showBanner("Added “" + item.item + "” to both stores.");
+      }).catch(function () {
+        showBanner("Item added here, but it may not have reached the sheet yet.", true);
+      });
+    }
+
+    function bootstrap(afterSave) {
+      if (!SHEET_ENDPOINT) {
+        state.items = DEFAULT_CATALOG.slice();
+        state.connected = false;
+        if (!afterSave) showBanner("Drafts stay on this device until the Google Sheet endpoint is connected.", true);
+        renderCount();
+        return Promise.resolve(false);
+      }
+      var url = SHEET_ENDPOINT + (SHEET_ENDPOINT.indexOf("?") >= 0 ? "&" : "?") + "action=bootstrap";
+      return fetchJson(url).then(function (data) {
+        if (!data || !data.ok) throw new Error("bad");
+        if (data.items && data.items.length) state.items = data.items;
+        else state.items = DEFAULT_CATALOG.slice();
+        state.current = data.current || [];
+        state.connected = true;
+        mergeCurrentIntoItems();
+        if (afterSave) showBanner("Current stock is up to date for both stores.");
+        else hideBanner();
+        renderCount();
+        if (state.view === "current") renderCurrent();
+        if (state.view === "reorder") renderReorder();
+        return true;
+      }).catch(function () {
+        state.items = DEFAULT_CATALOG.slice();
+        state.connected = false;
+        showBanner("Could not load the live sheet. You can still count, and we will retry when you save.", true);
+        renderCount();
+        return false;
+      });
+    }
+
+    function loadHistory(it) {
+      var local = [];
+      var current = currentForStore().filter(function (r) { return r.item === it.item && r.lastCounted; })[0];
+      if (!SHEET_ENDPOINT) {
+        renderHistory(it, current ? [{ timestamp: current.lastCounted, counter: current.counter, qty: current.qty, min: current.min, status: current.status }] : []);
+        return;
+      }
+      var url = SHEET_ENDPOINT + (SHEET_ENDPOINT.indexOf("?") >= 0 ? "&" : "?") +
+        "action=history&store=" + encodeURIComponent(state.store) + "&item=" + encodeURIComponent(it.item);
+      fetchJson(url).then(function (data) {
+        renderHistory(it, (data && data.history) || []);
+      }).catch(function () {
+        renderHistory(it, []);
+      });
+    }
+
+    function renderHistory(it, rows) {
+      var body = $("drawer-body");
+      if (!rows.length) {
+        body.innerHTML = "<p class='muted'>No saved counts for this item at " + escapeHtml(state.store) + " yet.</p>";
+        return;
+      }
+      var max = 1;
+      rows.forEach(function (r) { if (Number(r.qty) > max) max = Number(r.qty); });
+      var spark = "<div class='spark' aria-hidden='true'>";
+      rows.slice().reverse().forEach(function (r) {
+        var h = Math.max(6, Math.round((Number(r.qty) / max) * 80));
+        var low = Number(r.qty) <= Number(r.min);
+        spark += "<span class='" + (low ? "low" : "") + "' style='height:" + h + "px' title='" + escapeHtml(String(r.qty)) + "'></span>";
+      });
+      spark += "</div>";
+      var list = "<ul class='history-list'>";
+      rows.forEach(function (r) {
+        list += "<li><span>" + escapeHtml(r.timestamp) + "<div class='muted'>" + escapeHtml(r.counter || "") + "</div></span>";
+        list += "<span><strong>" + escapeHtml(String(r.qty)) + "</strong> " + escapeHtml(it.unit);
+        if (r.status === "Reorder") list += ' <span class="badge-reorder">Reorder</span>';
+        list += "</span></li>";
+      });
+      list += "</ul>";
+      body.innerHTML = spark + list;
+    }
+
+    function fetchJson(url) {
+      return fetch(url, { method: "GET" }).then(function (res) {
+        if (!res.ok) throw new Error("http");
+        return res.text();
+      }).then(function (text) {
+        return JSON.parse(text);
+      }).catch(function () {
+        return jsonp(url);
+      });
+    }
+
+    function jsonp(url) {
+      return new Promise(function (resolve, reject) {
+        var cb = "suppliesCb" + Date.now();
+        var timer = setTimeout(function () { cleanup(); reject(new Error("timeout")); }, 8000);
+        function cleanup() {
+          clearTimeout(timer);
+          delete window[cb];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+        window[cb] = function (data) { cleanup(); resolve(data); };
+        var script = document.createElement("script");
+        script.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + "callback=" + cb;
+        script.onerror = function () { cleanup(); reject(new Error("jsonp")); };
+        document.head.appendChild(script);
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function cssEscape(value) {
+      if (window.CSS && CSS.escape) return CSS.escape(value);
+      return String(value).replace(/"/g, '\\"');
+    }
+
+    document.querySelectorAll(".store-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () { setStore(btn.getAttribute("data-store")); });
+    });
+    document.querySelectorAll(".nav-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () { setView(btn.getAttribute("data-view")); });
+    });
+    $("counter").addEventListener("input", function () {
+      draftFor(state.store).counter = $("counter").value;
+      saveDrafts();
+    });
+    $("btn-submit").addEventListener("click", submitCount);
+    $("btn-add").addEventListener("click", openModal);
+    $("btn-cancel-item").addEventListener("click", closeModal);
+    $("btn-save-item").addEventListener("click", saveCustomItem);
+    $("btn-close-drawer").addEventListener("click", closeDrawer);
+    $("drawer-back").addEventListener("click", function (e) { if (e.target === $("drawer-back")) closeDrawer(); });
+    $("modal-back").addEventListener("click", function (e) { if (e.target === $("modal-back")) closeModal(); });
+
+    $("count-date").textContent = todayLabel();
+    loadDrafts();
+    $("counter").value = draftFor(state.store).counter || "";
+    state.items = DEFAULT_CATALOG.slice();
+    renderCount();
+    bootstrap(false);
+
+    window.__SUPPLIES = {
+      getState: function () { return state; },
+      setStore: setStore,
+      setView: setView,
+      setQty: setQty,
+      bump: bump,
+      countedStats: countedStats,
+      reorderRowsFromCurrent: reorderRowsFromCurrent,
+      SHEET_ENDPOINT: SHEET_ENDPOINT,
+      STORES: STORES
+    };
+  })();
+  </script>
+</body>
+</html>
